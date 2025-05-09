@@ -31,4 +31,5 @@ export const SandboxConfig: CirclesConfig = {
 };
 
 // Use this to switch between production and sandbox
-export const circlesConfig = process.env.NEXT_PUBLIC_CIRCLES_ENV === 'production' ? GnosisChainConfig : SandboxConfig;
+// export const circlesConfig = process.env.NEXT_PUBLIC_CIRCLES_ENV === 'production' ? GnosisChainConfig : SandboxConfig;
+export const circlesConfig = GnosisChainConfig;
