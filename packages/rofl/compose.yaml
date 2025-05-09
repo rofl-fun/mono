@@ -3,5 +3,5 @@ services:
     build: .
     image: "ghcr.io/0xjsi/rofl-tgbot"
     platform: linux/amd64
-    environment:
-      - TOKEN=${TOKEN}
+    # environment:
+      # - TOKEN=${TOKEN}
