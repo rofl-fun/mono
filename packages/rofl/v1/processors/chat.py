@@ -1,6 +1,7 @@
 import uuid
 import time
-from user import User
+from v1.processors.user import User
+from utils.rofl_status import RoflStatus
 
 class Message:
     def __init__(self, sender: str, message: str, chat_id: str):
@@ -26,22 +27,30 @@ class Chat:
         self.amount_of_messages = 0
         self.members = []
 
-    def new_message(self, user: "User", message: str):
+    def new_message(self, user: "User", message: str) -> RoflStatus:
         new_user_message = Message(user.uuid, message, self.uuid)
         self.messages.append(new_user_message)
         self.amount_of_messages += 1
+        return RoflStatus.SUCCESS.create(f"Managed to send the new message from {user.uuid}", new_user_message)
 
-    def get_messages(self) -> list["Message"]:
-        return self.messages
-
-    def get_last_message(self) -> "Message":
-        return self.message[self.amount_of_messages - 1]
-
-    def join_chat(self, user: "User"):
+    def join_chat(self, user: "User") -> RoflStatus:
         self.members.append(user.uuid)
         self.amount_of_members += 1
+        return RoflStatus.SUCCESS.create(f"User {user.uuid} joined the chat {self.uuid}")
 
     def leave_chat(self, user: "User"):
         self.members.remove(user.uuid)
         self.amount_of_members -= 1
+        return RoflStatus.SUCCESS.create(f"User {user.uuid} left the chat {self.uuid}")
 
+    def get_messages(self) -> RoflStatus:
+        if self.amount_of_messages == 0:
+            return RoflStatus.ERROR.create(f"{self.uuid} don't have any messages yet")
+        else:
+            return RoflStatus.SUCCESS.create(f"Got the messages from {self.uuid}", self.messages)
+
+    def get_last_message(self) -> "Message" | None:
+        if self.amount_of_messages == 0:
+            return None
+        else:
+            return self.message[self.amount_of_messages - 1]
