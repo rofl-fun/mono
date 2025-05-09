@@ -2,8 +2,21 @@
 
 import { useAccount } from "wagmi";
 import { Address } from "~~/components/scaffold-eth";
-import groupsData from "./data/items.json";
 import { formatDistanceToNow } from "date-fns";
+import groupsData from "./data/items.json";
+
+interface GroupInfo {
+  id: number;
+  name: string;
+  type: string;
+  members: number;
+  avgPnl: number;
+  joinPrice: number;
+  currency: string;
+  description: string;
+  trend: string;
+  lastActive: string;
+}
 
 const Home = () => {
   const { address: connectedAddress } = useAccount();
@@ -27,7 +40,7 @@ const Home = () => {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {groupsData.groups.map((group) => (
+          {groupsData.groups.map((group: GroupInfo) => (
             <div
               key={group.id}
               className="bg-base-200 rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-shadow"
