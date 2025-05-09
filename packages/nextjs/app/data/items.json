@@ -1,0 +1,52 @@
+{
+  "groups": [
+    {
+      "id": 1,
+      "name": "Alpha Traders",
+      "type": "alpha",
+      "members": 42,
+      "avgPnl": 156.78,
+      "joinPrice": 0.5,
+      "currency": "ROFL",
+      "description": "Exclusive group for experienced traders",
+      "trend": "up",
+      "lastActive": "2024-03-20T15:30:00Z"
+    },
+    {
+      "id": 2,
+      "name": "Crypto Cabal",
+      "type": "cabal",
+      "members": 128,
+      "avgPnl": 89.45,
+      "joinPrice": 0.2,
+      "currency": "ROFL",
+      "description": "Community-driven trading insights",
+      "trend": "up",
+      "lastActive": "2024-03-20T14:45:00Z"
+    },
+    {
+      "id": 3,
+      "name": "DeFi Masters",
+      "type": "alpha",
+      "members": 35,
+      "avgPnl": 234.12,
+      "joinPrice": 1.0,
+      "currency": "ROFL",
+      "description": "Advanced DeFi strategies and analysis",
+      "trend": "down",
+      "lastActive": "2024-03-20T15:15:00Z"
+    },
+    {
+      "id": 4,
+      "name": "NFT Traders",
+      "type": "cabal",
+      "members": 95,
+      "avgPnl": 67.89,
+      "joinPrice": 0.3,
+      "currency": "ROFL",
+      "description": "NFT trading and market analysis",
+      "trend": "up",
+      "lastActive": "2024-03-20T15:00:00Z"
+    }
+  ]
+}

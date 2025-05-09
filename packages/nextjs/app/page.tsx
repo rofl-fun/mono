@@ -1,71 +1,98 @@
 "use client";
 
-import Link from "next/link";
-import type { NextPage } from "next";
 import { useAccount } from "wagmi";
-import { BugAntIcon, MagnifyingGlassIcon } from "@heroicons/react/24/outline";
 import { Address } from "~~/components/scaffold-eth";
+import { formatDistanceToNow } from "date-fns";
+import groupsData from "./data/items.json";
 
-const Home: NextPage = () => {
+interface GroupInfo {
+  id: number;
+  name: string;
+  type: string;
+  members: number;
+  avgPnl: number;
+  joinPrice: number;
+  currency: string;
+  description: string;
+  trend: string;
+  lastActive: string;
+}
+
+const Home = () => {
   const { address: connectedAddress } = useAccount();
 
+  const formatNumber = (num: number) => {
+    return new Intl.NumberFormat('en-US', {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2,
+    }).format(num);
+  };
+
   return (
-    <>
-      <div className="flex items-center flex-col grow pt-10">
-        <div className="px-5">
-          <h1 className="text-center">
-            <span className="block text-2xl mb-2">Welcome to</span>
-            <span className="block text-4xl font-bold">Scaffold-ETH 2</span>
-          </h1>
-          <div className="flex justify-center items-center space-x-2 flex-col">
-            <p className="my-2 font-medium">Connected Address:</p>
+    <div className="min-h-screen bg-base-100">
+      <div className="container mx-auto px-4 py-8">
+        <div className="flex justify-between items-center mb-8">
+          <h1 className="text-3xl font-bold">ROFL.FUN Groups</h1>
+          <div className="flex items-center space-x-4">
+            <span className="text-sm">Connected:</span>
             <Address address={connectedAddress} />
           </div>
-
-          <p className="text-center text-lg">
-            Get started by editing{" "}
-            <code className="italic bg-base-300 text-base font-bold max-w-full break-words break-all inline-block">
-              packages/nextjs/app/page.tsx
-            </code>
-          </p>
-          <p className="text-center text-lg">
-            Edit your smart contract{" "}
-            <code className="italic bg-base-300 text-base font-bold max-w-full break-words break-all inline-block">
-              YourContract.sol
-            </code>{" "}
-            in{" "}
-            <code className="italic bg-base-300 text-base font-bold max-w-full break-words break-all inline-block">
-              packages/hardhat/contracts
-            </code>
-          </p>
         </div>
 
-        <div className="grow bg-base-300 w-full mt-16 px-8 py-12">
-          <div className="flex justify-center items-center gap-12 flex-col md:flex-row">
-            <div className="flex flex-col bg-base-100 px-10 py-10 text-center items-center max-w-xs rounded-3xl">
-              <BugAntIcon className="h-8 w-8 fill-secondary" />
-              <p>
-                Tinker with your smart contract using the{" "}
-                <Link href="/debug" passHref className="link">
-                  Debug Contracts
-                </Link>{" "}
-                tab.
-              </p>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {groupsData.groups.map((group: GroupInfo) => (
+            <div
+              key={group.id}
+              className="bg-base-200 rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-shadow"
+            >
+              <div className="p-6">
+                <div className="flex justify-between items-start mb-4">
+                  <div>
+                    <h2 className="text-xl font-bold">{group.name}</h2>
+                    <span className={`inline-block px-2 py-1 text-xs rounded-full ${
+                      group.type === 'alpha' ? 'bg-primary text-primary-content' : 'bg-secondary text-secondary-content'
+                    }`}>
+                      {group.type.toUpperCase()}
+                    </span>
+                  </div>
+                  <div className="text-right">
+                    <div className="text-lg font-bold">
+                      {formatNumber(group.joinPrice)} {group.currency}
+                    </div>
+                    <div className="text-sm opacity-70">to join</div>
+                  </div>
+                </div>
+
+                <p className="text-sm opacity-80 mb-4">{group.description}</p>
+
+                <div className="grid grid-cols-2 gap-4 mb-4">
+                  <div>
+                    <div className="text-sm opacity-70">Members</div>
+                    <div className="font-bold">{group.members}</div>
+                  </div>
+                  <div>
+                    <div className="text-sm opacity-70">Avg P&L</div>
+                    <div className={`font-bold ${
+                      group.avgPnl >= 0 ? 'text-green-500' : 'text-red-500'
+                    }`}>
+                      {group.avgPnl >= 0 ? '+' : ''}{formatNumber(group.avgPnl)}%
+                    </div>
+                  </div>
+                </div>
+
+                <div className="text-sm opacity-70">
+                  Last active: {formatDistanceToNow(new Date(group.lastActive), { addSuffix: true })}
+                </div>
+
+                <button className="w-full mt-4 btn btn-primary">
+                  Join Group
+                </button>
+              </div>
             </div>
-            <div className="flex flex-col bg-base-100 px-10 py-10 text-center items-center max-w-xs rounded-3xl">
-              <MagnifyingGlassIcon className="h-8 w-8 fill-secondary" />
-              <p>
-                Explore your local transactions with the{" "}
-                <Link href="/blockexplorer" passHref className="link">
-                  Block Explorer
-                </Link>{" "}
-                tab.
-              </p>
-            </div>
-          </div>
+          ))}
         </div>
       </div>
-    </>
+    </div>
   );
 };
 
