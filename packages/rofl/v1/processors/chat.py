@@ -11,7 +11,6 @@ class Message:
         self.sent_at = time.time()
         self.chat_id = chat_id
 
-
 def get_chat(id: str) -> "Chat":
     pass 
 
@@ -54,3 +53,10 @@ class Chat:
             return None
         else:
             return self.message[self.amount_of_messages - 1]
+
+class MasterChatVault:
+    def add_chat(self, id: str):
+        self.chats.append(id)
+
+    def get_chats(self):
+        return self.chats
