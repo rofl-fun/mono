@@ -16,6 +16,11 @@
     "vercel:yolo": "vercel --build-env YARN_ENABLE_IMMUTABLE_INSTALLS=false --build-env ENABLE_EXPERIMENTAL_COREPACK=1 --build-env NEXT_PUBLIC_IGNORE_BUILD_ERROR=true --build-env VERCEL_TELEMETRY_DISABLED=1"
   },
   "dependencies": {
+    "@circles-sdk/adapter-ethers": "^0.24.0",
+    "@circles-sdk/data": "^0.24.0",
+    "@circles-sdk/profiles": "^0.24.0",
+    "@circles-sdk/sdk": "^0.24.0",
+    "@circles-sdk/utils": "^0.24.0",
     "@heroicons/react": "~2.1.5",
     "@rainbow-me/rainbowkit": "2.2.3",
     "@tanstack/react-query": "~5.59.15",
@@ -24,6 +29,7 @@
     "blo": "~1.2.0",
     "burner-connector": "0.0.12",
     "daisyui": "5.0.9",
+    "ethers": "^6.14.0",
     "kubo-rpc-client": "~5.0.2",
     "next": "~15.2.3",
     "next-nprogress-bar": "~2.3.13",

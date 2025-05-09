@@ -5,6 +5,13 @@ __metadata:
   version: 6
   cacheKey: 8
 
+"@adraffy/ens-normalize@npm:1.10.1":
+  version: 1.10.1
+  resolution: "@adraffy/ens-normalize@npm:1.10.1"
+  checksum: 0836f394ea256972ec19a0b5e78cb7f5bcdfd48d8a32c7478afc94dd53ae44c04d1aa2303d7f3077b4f3ac2323b1f557ab9188e8059978748fdcd83e04a80dcc
+  languageName: node
+  linkType: hard
+
 "@adraffy/ens-normalize@npm:^1.10.1":
   version: 1.11.0
   resolution: "@adraffy/ens-normalize@npm:1.11.0"
@@ -905,6 +912,85 @@ __metadata:
   dependencies:
     "@chainsafe/is-ip": ^2.0.1
   checksum: 90d27154c11ff878130150766ebfc490c829cd5249a61f7018fa4cefe3a18d92394285bb435c38bd0dbe45261006a82572e95ac201e9b28157de80127a6a3d06
+  languageName: node
+  linkType: hard
+
+"@circles-sdk/abi-v1@npm:0.24.0":
+  version: 0.24.0
+  resolution: "@circles-sdk/abi-v1@npm:0.24.0"
+  dependencies:
+    ethers: ^6.13.2
+  checksum: f3a47fac0dcf799947d09941bd4573670c5da6895dea9d1a9a0e580d53720131b67ab4d07d6701e79b8c8f12e0f3fc48de0b72666c5c257d5f6075dedee39cad
+  languageName: node
+  linkType: hard
+
+"@circles-sdk/abi-v2@npm:0.24.0":
+  version: 0.24.0
+  resolution: "@circles-sdk/abi-v2@npm:0.24.0"
+  dependencies:
+    ethers: ^6.13.2
+  checksum: f5e970a8bee768258f904611464474918bc366a8bb7504c872b82cf415bfa10c1a21aa9d30d0fc45978dfeffd6c5f5860a63ea3379e995c100d96aa031959f5b
+  languageName: node
+  linkType: hard
+
+"@circles-sdk/adapter-ethers@npm:0.24.0, @circles-sdk/adapter-ethers@npm:^0.24.0":
+  version: 0.24.0
+  resolution: "@circles-sdk/adapter-ethers@npm:0.24.0"
+  dependencies:
+    "@circles-sdk/adapter": 0.24.0
+    "@circles-sdk/utils": 0.24.0
+    ethers: ^6.13.2
+  checksum: a5e81338a097bb74a7c104a6b44a68fb4dc8b0b5dd2a2f0271865677861577deb0f6064af801bfab2fb096041c9cd9b4edaf830179b2a3b0e8bde10a7ca041e6
+  languageName: node
+  linkType: hard
+
+"@circles-sdk/adapter@npm:0.24.0":
+  version: 0.24.0
+  resolution: "@circles-sdk/adapter@npm:0.24.0"
+  checksum: 918a7b443af38aaf5dcbac6c858f5af4baff7e18112748100fab10bfa39fb1d72d90b00c12aa6da26c4231c5cdf9b639377e83ad5d143af51eb79430f2e19db1
+  languageName: node
+  linkType: hard
+
+"@circles-sdk/data@npm:0.24.0, @circles-sdk/data@npm:^0.24.0":
+  version: 0.24.0
+  resolution: "@circles-sdk/data@npm:0.24.0"
+  dependencies:
+    "@circles-sdk/utils": 0.24.0
+  checksum: 9395633c31925593fe9405eefddf88b253687a23d429c31c4e07d4fe0ce1287383a37b3ccf433a1f1d650ca1d39e1ee506b9c4cb52ea128643530c4b0c4653ad
+  languageName: node
+  linkType: hard
+
+"@circles-sdk/profiles@npm:0.24.0, @circles-sdk/profiles@npm:^0.24.0":
+  version: 0.24.0
+  resolution: "@circles-sdk/profiles@npm:0.24.0"
+  dependencies:
+    "@circles-sdk/utils": 0.24.0
+  checksum: 41f4304ab2ca313e8f337fc1a032641b33c0837e42700d20a6974716cdc5c99bb0d888cdfbcfbf64495c3b718428d2b38f5bd930ce2868901a32bce44fd615ef
+  languageName: node
+  linkType: hard
+
+"@circles-sdk/sdk@npm:^0.24.0":
+  version: 0.24.0
+  resolution: "@circles-sdk/sdk@npm:0.24.0"
+  dependencies:
+    "@circles-sdk/abi-v1": 0.24.0
+    "@circles-sdk/abi-v2": 0.24.0
+    "@circles-sdk/adapter-ethers": 0.24.0
+    "@circles-sdk/data": 0.24.0
+    "@circles-sdk/profiles": 0.24.0
+    ethers: ^6.13.2
+    multihashes: ^4.0.3
+  checksum: 418472fc1abdafd4d1521a9e168c307ff068c5b470a656114c5d9e6f94832843f90ed507cce031d57d43c528246185c75febf2c8ce696ab84eb7a5adf545867a
+  languageName: node
+  linkType: hard
+
+"@circles-sdk/utils@npm:0.24.0, @circles-sdk/utils@npm:^0.24.0":
+  version: 0.24.0
+  resolution: "@circles-sdk/utils@npm:0.24.0"
+  dependencies:
+    bignumber.js: ^9.1.2
+    ethers: ^6.13.2
+  checksum: d73d5c43a07cac59e4efd537589fe4f358ab987090487eee98bf7193ba00da2f84c7488ce9dda2c0537165c933b0c46f70cfd6cdbae3ef592fe6d58de1704470
   languageName: node
   linkType: hard
 
@@ -2779,6 +2865,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@multiformats/base-x@npm:^4.0.1":
+  version: 4.0.1
+  resolution: "@multiformats/base-x@npm:4.0.1"
+  checksum: ecbf84bdd7613fd795e4a41f20f3e8cc7df8bbee84690b7feed383d45a638ed228a80ff6f5c930373cbf24539f64857b66023ee3c1e914f6bac9995c76414a87
+  languageName: node
+  linkType: hard
+
 "@multiformats/blake2@npm:^2.0.2":
   version: 2.0.2
   resolution: "@multiformats/blake2@npm:2.0.2"
@@ -2946,6 +3039,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@noble/curves@npm:1.2.0":
+  version: 1.2.0
+  resolution: "@noble/curves@npm:1.2.0"
+  dependencies:
+    "@noble/hashes": 1.3.2
+  checksum: bb798d7a66d8e43789e93bc3c2ddff91a1e19fdb79a99b86cd98f1e5eff0ee2024a2672902c2576ef3577b6f282f3b5c778bebd55761ddbb30e36bf275e83dd0
+  languageName: node
+  linkType: hard
+
 "@noble/curves@npm:1.4.2, @noble/curves@npm:~1.4.0":
   version: 1.4.2
   resolution: "@noble/curves@npm:1.4.2"
@@ -2979,6 +3081,13 @@ __metadata:
   dependencies:
     "@noble/hashes": 1.8.0
   checksum: dc82f8c095e90ab0d88f4bfcdf3a6f8500444dac3644b02d7b81a268f516573f18fae66aa3030f5e8886d86dff63dd57a5bb639d968d6cdfadae10436680840c
+  languageName: node
+  linkType: hard
+
+"@noble/hashes@npm:1.3.2":
+  version: 1.3.2
+  resolution: "@noble/hashes@npm:1.3.2"
+  checksum: fe23536b436539d13f90e4b9be843cc63b1b17666a07634a2b1259dded6f490be3d050249e6af98076ea8f2ea0d56f578773c2197f2aa0eeaa5fba5bc18ba474
   languageName: node
   linkType: hard
 
@@ -3573,6 +3682,11 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@se-2/nextjs@workspace:packages/nextjs"
   dependencies:
+    "@circles-sdk/adapter-ethers": ^0.24.0
+    "@circles-sdk/data": ^0.24.0
+    "@circles-sdk/profiles": ^0.24.0
+    "@circles-sdk/sdk": ^0.24.0
+    "@circles-sdk/utils": ^0.24.0
     "@heroicons/react": ~2.1.5
     "@rainbow-me/rainbowkit": 2.2.3
     "@tailwindcss/postcss": 4.0.15
@@ -3592,6 +3706,7 @@ __metadata:
     eslint-config-next: ~15.2.3
     eslint-config-prettier: ~10.1.1
     eslint-plugin-prettier: ~5.2.4
+    ethers: ^6.14.0
     kubo-rpc-client: ~5.0.2
     next: ~15.2.3
     next-nprogress-bar: ~2.3.13
@@ -4823,6 +4938,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@types/node@npm:22.7.5":
+  version: 22.7.5
+  resolution: "@types/node@npm:22.7.5"
+  dependencies:
+    undici-types: ~6.19.2
+  checksum: 1a8bbb504efaffcef7b8491074a428e5c0b5425b0c0ffb13e7262cb8462c275e8cc5eaf90a38d8fbf52a1eeda7c01ab3b940673c43fc2414140779c973e40ec6
+  languageName: node
+  linkType: hard
+
 "@types/node@npm:^20.10.7":
   version: 20.17.46
   resolution: "@types/node@npm:20.17.46"
@@ -5886,6 +6010,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"aes-js@npm:4.0.0-beta.5":
+  version: 4.0.0-beta.5
+  resolution: "aes-js@npm:4.0.0-beta.5"
+  checksum: cc2ea969d77df939c32057f7e361b6530aa6cb93cb10617a17a45cd164e6d761002f031ff6330af3e67e58b1f0a3a8fd0b63a720afd591a653b02f649470e15b
+  languageName: node
+  linkType: hard
+
 "agent-base@npm:6":
   version: 6.0.2
   resolution: "agent-base@npm:6.0.2"
@@ -6336,6 +6467,13 @@ __metadata:
   version: 5.2.2
   resolution: "big.js@npm:5.2.2"
   checksum: b89b6e8419b097a8fb4ed2399a1931a68c612bce3cfd5ca8c214b2d017531191070f990598de2fc6f3f993d91c0f08aa82697717f6b3b8732c9731866d233c9e
+  languageName: node
+  linkType: hard
+
+"bignumber.js@npm:^9.1.2":
+  version: 9.3.0
+  resolution: "bignumber.js@npm:9.3.0"
+  checksum: 580d783d60246e758e527fa879ae0d282d8f250f555dd0fcee1227d680186ceba49ed7964c6d14e2e8d8eac7a2f4dd6ef1b7925dc52f5fc28a5a87639dd2dbd1
   languageName: node
   linkType: hard
 
@@ -8354,6 +8492,21 @@ __metadata:
     "@scure/bip32": 1.4.0
     "@scure/bip39": 1.3.0
   checksum: 1466e4c417b315a6ac67f95088b769fafac8902b495aada3c6375d827e5a7882f9e0eea5f5451600d2250283d9198b8a3d4d996e374e07a80a324e29136f25c6
+  languageName: node
+  linkType: hard
+
+"ethers@npm:^6.13.2, ethers@npm:^6.14.0":
+  version: 6.14.0
+  resolution: "ethers@npm:6.14.0"
+  dependencies:
+    "@adraffy/ens-normalize": 1.10.1
+    "@noble/curves": 1.2.0
+    "@noble/hashes": 1.3.2
+    "@types/node": 22.7.5
+    aes-js: 4.0.0-beta.5
+    tslib: 2.7.0
+    ws: 8.17.1
+  checksum: 937cab802131b289ca9a278fce595dff5977d358c5e2c72603e321a67a3ed531b4c19ddeec555d53fd474f75e101d599b6962cb3e33a691b526ecfebed9482d8
   languageName: node
   linkType: hard
 
@@ -11356,6 +11509,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"multibase@npm:^4.0.1":
+  version: 4.0.6
+  resolution: "multibase@npm:4.0.6"
+  dependencies:
+    "@multiformats/base-x": ^4.0.1
+  checksum: 891ce47f509c6070d2306e7e00aef3ef41fbb50a848a1e1bec5e75ca63c5032015a436cf09e9e3939b5b2ca81e74804151eb410a388f10e9aabf7a2f5a35d272
+  languageName: node
+  linkType: hard
+
 "multiformats@npm:^13.0.0, multiformats@npm:^13.0.1, multiformats@npm:^13.1.0, multiformats@npm:^13.2.3, multiformats@npm:^13.3.1":
   version: 13.3.3
   resolution: "multiformats@npm:13.3.3"
@@ -11374,6 +11536,17 @@ __metadata:
   version: 13.1.3
   resolution: "multiformats@npm:13.1.3"
   checksum: afa163e9053061f9226ae7d70b80c89bc67ce7eb23eb4e07bef3bf1aff2b6d5ef982ae8f08c74fbb473066c889ac4d43da62cebf9c0628f21b1276eb1d57c5d0
+  languageName: node
+  linkType: hard
+
+"multihashes@npm:^4.0.3":
+  version: 4.0.3
+  resolution: "multihashes@npm:4.0.3"
+  dependencies:
+    multibase: ^4.0.1
+    uint8arrays: ^3.0.0
+    varint: ^5.0.2
+  checksum: 57c978aa53f7144f8a146a486aa6aea96a73f21058f48ab80a8c5542854197aa63d33aae42b005bed1bbba9f70958b60f3287d90f1a47cf13e8ea7d75d6b8e34
   languageName: node
   linkType: hard
 
@@ -14513,6 +14686,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"tslib@npm:2.7.0":
+  version: 2.7.0
+  resolution: "tslib@npm:2.7.0"
+  checksum: 1606d5c89f88d466889def78653f3aab0f88692e80bb2066d090ca6112ae250ec1cfa9dbfaab0d17b60da15a4186e8ec4d893801c67896b277c17374e36e1d28
+  languageName: node
+  linkType: hard
+
 "tslib@npm:^2.0.0, tslib@npm:^2.1.0, tslib@npm:^2.3.1, tslib@npm:^2.4.0, tslib@npm:^2.6.0, tslib@npm:^2.6.2, tslib@npm:^2.8.0, tslib@npm:^2.8.1":
   version: 2.8.1
   resolution: "tslib@npm:2.8.1"
@@ -15133,6 +15313,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"varint@npm:^5.0.2":
+  version: 5.0.2
+  resolution: "varint@npm:5.0.2"
+  checksum: e1a66bf9a6cea96d1f13259170d4d41b845833acf3a9df990ea1e760d279bd70d5b1f4c002a50197efd2168a2fd43eb0b808444600fd4d23651e8d42fe90eb05
+  languageName: node
+  linkType: hard
+
 "varint@npm:^6.0.0":
   version: 6.0.0
   resolution: "varint@npm:6.0.0"
@@ -15486,6 +15673,21 @@ __metadata:
   languageName: node
   linkType: hard
 
+"ws@npm:8.17.1, ws@npm:~8.17.1":
+  version: 8.17.1
+  resolution: "ws@npm:8.17.1"
+  peerDependencies:
+    bufferutil: ^4.0.1
+    utf-8-validate: ">=5.0.2"
+  peerDependenciesMeta:
+    bufferutil:
+      optional: true
+    utf-8-validate:
+      optional: true
+  checksum: 442badcce1f1178ec87a0b5372ae2e9771e07c4929a3180321901f226127f252441e8689d765aa5cfba5f50ac60dd830954afc5aeae81609aefa11d3ddf5cecf
+  languageName: node
+  linkType: hard
+
 "ws@npm:8.18.0":
   version: 8.18.0
   resolution: "ws@npm:8.18.0"
@@ -15528,21 +15730,6 @@ __metadata:
     utf-8-validate:
       optional: true
   checksum: f9bb062abf54cc8f02d94ca86dcd349c3945d63851f5d07a3a61c2fcb755b15a88e943a63cf580cbdb5b74436d67ef6b67f745b8f7c0814e411379138e1863cb
-  languageName: node
-  linkType: hard
-
-"ws@npm:~8.17.1":
-  version: 8.17.1
-  resolution: "ws@npm:8.17.1"
-  peerDependencies:
-    bufferutil: ^4.0.1
-    utf-8-validate: ">=5.0.2"
-  peerDependenciesMeta:
-    bufferutil:
-      optional: true
-    utf-8-validate:
-      optional: true
-  checksum: 442badcce1f1178ec87a0b5372ae2e9771e07c4929a3180321901f226127f252441e8689d765aa5cfba5f50ac60dd830954afc5aeae81609aefa11d3ddf5cecf
   languageName: node
   linkType: hard
 
