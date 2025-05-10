@@ -32,17 +32,9 @@ const AboutPage = () => {
         <link href="https://fonts.googleapis.com/css2?family=League+Gothic&display=swap" rel="stylesheet" />
       </Head>
       <div className="min-h-screen bg-gradient-to-b from-base-100 to-base-200 flex flex-col items-center justify-center py-16 px-4">
-        <img
-          src="/logo.png"
-          alt="ROFL.FUN Logo"
-          className="w-64 max-w-full mb-8 drop-shadow-xl"
-          style={{ filter: "drop-shadow(0 4px 24px rgba(0,0,0,0.2))" }}
-        />
-        <h1 className="text-6xl font-extrabold mb-4 bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent text-center">
-          About Us
-        </h1>
-        <h2 className="text-2xl font-semibold mb-10 text-center text-primary">Community-driven. Transparent. Fun.</h2>
-        <p className="max-w-2xl text-lg text-center opacity-80 mb-12">
+        <h1 className="text-4xl font-bold mb-8 text-white">About Us</h1>
+        <h2 className="text-2xl font-semibold mb-10 text-center text-white">Community-driven. Transparent. Fun.</h2>
+        <p className="max-w-2xl text-lg text-center text-white opacity-80 mb-12">
           ROFL.FUN is a collective of hackers, builders, and dreamers. We believe in the power of open collaboration,
           transparency, and a little bit of fun. Our mission is to make trading and building on Web3 accessible, social,
           and rewarding for everyone.

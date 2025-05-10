@@ -63,7 +63,7 @@ const HowPage = () => {
             </p>
             <div className="w-full flex justify-center mb-12">
               <Image
-                src="/pages/flowchartuser.png"
+                src="/pages/userflowchart.png"
                 alt="User Flowchart"
                 width={1500}
                 height={900}

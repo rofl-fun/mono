@@ -1,30 +1,30 @@
 "use client";
 
-import { useState } from 'react';
-import Link from 'next/link';
+import { useState } from "react";
+import Link from "next/link";
 
 const CreateGroupPage = () => {
-  const [title, setTitle] = useState('');
-  const [description, setDescription] = useState('');
+  const [title, setTitle] = useState("");
+  const [description, setDescription] = useState("");
+  const [price, setPrice] = useState("");
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    console.log('New group created:', { title, description });
+    console.log("New group created:", { title, description, price });
     alert(`Group '${title}' created (see console for details)!`);
-    setTitle('');
-    setDescription('');
+    setTitle("");
+    setDescription("");
+    setPrice("");
   };
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-base-100 to-base-200 flex flex-col items-center justify-center p-4">
       <div className="w-full max-w-2xl bg-base-100 p-8 rounded-xl shadow-lg">
-        <div className="flex justify-between items-center mb-8">
-          <h1 className="text-3xl font-bold text-primary">Create a New Group</h1>
+        <div className="flex flex-col items-start mb-8">
           <Link href="/" passHref>
-            <button className="btn btn-outline btn-sm hover:bg-primary hover:text-primary-content">
-              &larr; Back to Home
-            </button>
+            <button className="btn btn-sm hover:bg-primary hover:text-primary-content">&larr; Back to Home</button>
           </Link>
+          <h1 className="text-3xl font-bold text-white mt-4">Create a New Group</h1>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-6">
@@ -36,7 +36,7 @@ const CreateGroupPage = () => {
               type="text"
               id="title"
               value={title}
-              onChange={(e) => setTitle(e.target.value)}
+              onChange={e => setTitle(e.target.value)}
               required
               className="w-full px-4 py-3 rounded-lg bg-base-200 border border-base-300 focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none transition-all"
               placeholder="Give your group a catchy title"
@@ -50,7 +50,7 @@ const CreateGroupPage = () => {
             <textarea
               id="description"
               value={description}
-              onChange={(e) => setDescription(e.target.value)}
+              onChange={e => setDescription(e.target.value)}
               rows={4}
               required
               className="w-full px-4 py-3 rounded-lg bg-base-200 border border-base-300 focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none transition-all"
@@ -59,10 +59,22 @@ const CreateGroupPage = () => {
           </div>
 
           <div>
-            <button
-              type="submit"
-              className="w-full btn btn-primary btn-lg hover:scale-[1.02] transition-transform"
-            >
+            <label htmlFor="price" className="block text-sm font-medium text-base-content mb-1">
+              Price in ROFL
+            </label>
+            <input
+              type="number"
+              id="price"
+              value={price}
+              onChange={e => setPrice(e.target.value)}
+              required
+              className="w-full px-4 py-3 rounded-lg bg-base-200 border border-base-300 focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none transition-all"
+              placeholder="Enter the price in ROFL"
+            />
+          </div>
+
+          <div>
+            <button type="submit" className="w-full btn btn-primary btn-lg hover:scale-[1.02] transition-transform">
               Create Group
             </button>
           </div>
