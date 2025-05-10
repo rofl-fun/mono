@@ -1,11 +1,16 @@
 import uuid
 import time
 import json
+import os
 from v1.processors.user import User
 from utils.rofl_status import RoflStatus
 from monstr.src.monstr.client.client import Client
 from monstr.src.monstr.event.event import Event
-from monstr.src.monstr.encrypt import NIP44Encrypt
+from dotenv import load_dotenv
+
+load_dotenv()
+
+nostr_url = os.environ.get("NOSTR_URL")
 
 class Message:
     def __init__(self, sender: str, message: str, chat_id: str):
@@ -32,7 +37,7 @@ class Chat:
 
     @classmethod
     async def create(cls, creator: "User", name: str, description: str = "", image_url: str = "") -> "Chat":
-        async with Client(url) as client:
+        async with Client(nostr_url) as client:
             event = Event(kind=Event.KIND_CHANNEL_CREATE,
                 content=json.dumps({
                     "name": name,
@@ -49,7 +54,7 @@ class Chat:
         self.messages.append(new_user_message)
         self.amount_of_messages += 1
         # Async nostr opperation
-        async with Client(url) as client:
+        async with Client(nostr_url) as client:
             # Create a nostr message
             event = Event(kind=Event.KIND_CHANNEL_MESSAGE,
                 content=message,
@@ -81,9 +86,9 @@ class Chat:
         else:
             return self.message[self.amount_of_messages - 1]
 
-class MasterChatVault:
-    def add_chat(self, id: str):
-        self.chats.append(id)
+# class MasterChatVault:
+    # def add_chat(self, id: str):
+        # self.chats.append(id)
 
-    def get_chats(self):
-        return self.chats
+    # def get_chats(self):
+        # return self.chats
