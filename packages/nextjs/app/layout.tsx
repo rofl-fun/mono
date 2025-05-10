@@ -1,17 +1,28 @@
+import { Inter } from "next/font/google";
 import "@rainbow-me/rainbowkit/styles.css";
+import type { Metadata } from "next";
+import Navbar from "~~/components/Navbar";
 import { ScaffoldEthAppWithProviders } from "~~/components/ScaffoldEthAppWithProviders";
 import { ThemeProvider } from "~~/components/ThemeProvider";
 import "~~/styles/globals.css";
 import { getMetadata } from "~~/utils/scaffold-eth/getMetadata";
 
-export const metadata = getMetadata({ title: "Scaffold-ETH 2 App", description: "Built with 🏗 Scaffold-ETH 2" });
+const inter = Inter({ subsets: ["latin"] });
+
+export const metadata: Metadata = {
+  title: "ROFL.FUN",
+  description: "Community-driven trading platform",
+};
 
 const ScaffoldEthApp = ({ children }: { children: React.ReactNode }) => {
   return (
     <html suppressHydrationWarning>
-      <body>
+      <body className={inter.className}>
         <ThemeProvider enableSystem>
-          <ScaffoldEthAppWithProviders>{children}</ScaffoldEthAppWithProviders>
+          <ScaffoldEthAppWithProviders>
+            <Navbar />
+            {children}
+          </ScaffoldEthAppWithProviders>
         </ThemeProvider>
       </body>
     </html>
