@@ -1,5 +1,6 @@
 from fastapi import FastAPI
 from v1.processors.user import User
+from utils.rofl_status import RoflStatus
 
 app = FastAPI()
 
@@ -8,8 +9,9 @@ def idle():
     return {"status": "i'm alive"}
 
 @app.post("/v1/user/new")
-def new_user(uuid: str, display_name=id):
-    return User.create(display_name=display_name, uid=uuid)
+async def new_user(uuid="aa", display_name=id):
+    res  = await User.create(display_name=display_name, uuid=uuid)
+    return res
 
 # @app.post("/v1/join")
 # def join_group():
