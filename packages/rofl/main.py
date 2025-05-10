@@ -21,6 +21,12 @@ class NewMessage(BaseModel):
     user_id: str
     message: str
 
+class NewChat(BaseModel):
+    user_id: str
+    name: str
+    description: str
+    image_url: str
+
 app = FastAPI()
 
 app.add_middleware(
@@ -59,6 +65,12 @@ async def message(params: NewMessage):
     res = await chat.new_message(user, params.message)
     return res
 
+@app.post("/v1/create/")
+async def create_chat(params: NewChat):
+    user: "User" = await get_user(params.user_id)
+    res = await user.create_chat(params.name, params.description, params.image_url)
+    return res
+
 @app.get("/v1/chatfeedOf/{user}")
 async def get_chat_feed_of(user: str):
     user_inst: "User" = get_user(user)
@@ -68,4 +80,5 @@ async def get_chat_feed_of(user: str):
 @app.get("/v1/historyOf/{chat}")
 async def get_history_of(chat: str):
     chat_inst: "Chat" = await get_chat(chat)
+    return chat_inst
 
