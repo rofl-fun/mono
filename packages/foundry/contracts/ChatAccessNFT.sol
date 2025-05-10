@@ -84,7 +84,7 @@ contract ChatAccessNFT is ERC721, Ownable {
      * @dev Mints a new token from a specific collection
      * @param collectionId The ID of the collection to mint from
      */
-    function mint(uint256 collectionId) external payable {
+    function mint(address receiver, uint256 collectionId) external payable {
         ChatCollection memory collection = collections[collectionId];
         require(collection.exists, "Collection does not exist");
         require(msg.value == collection.price, "Incorrect payment amount");
@@ -99,7 +99,7 @@ contract ChatAccessNFT is ERC721, Ownable {
 
         // Mint the token
         uint256 tokenId = _nextTokenId++;
-        _safeMint(msg.sender, tokenId);
+        _safeMint(receiver, tokenId);
         tokenCollection[tokenId] = collectionId;
 
         emit TokenMinted(tokenId, collectionId, msg.sender);
