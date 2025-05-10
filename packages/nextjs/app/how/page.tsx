@@ -128,7 +128,7 @@ const HowPage = () => {
                     {idx === 4 && (
                       <div className="w-full flex justify-center mt-6">
                         <Image
-                          src="/pages/loog.png"
+                          src="/pages/richy.png"
                           alt="Get Rich Logo"
                           width={500}
                           height={256}
