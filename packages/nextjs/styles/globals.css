@@ -1,4 +1,5 @@
 @import "tailwindcss";
+@import url("https://fonts.googleapis.com/css2?family=League+Gothic&family=Roboto:wght@400;500;700&display=swap");
 
 @theme {
   --shadow-center: 0 0 12px -2px rgb(0 0 0 / 0.05);
@@ -12,42 +13,17 @@
 }
 
 @plugin "daisyui/theme" {
-  name: "light";
-
-  --color-primary: #93bbfb;
-  --color-primary-content: #212638;
-  --color-secondary: #dae8ff;
-  --color-secondary-content: #212638;
-  --color-accent: #93bbfb;
-  --color-accent-content: #212638;
-  --color-neutral: #212638;
-  --color-neutral-content: #ffffff;
-  --color-base-100: #ffffff;
-  --color-base-200: #f4f8ff;
-  --color-base-300: #dae8ff;
-  --color-base-content: #212638;
-  --color-info: #93bbfb;
-  --color-success: #34eeb6;
-  --color-warning: #ffcf72;
-  --color-error: #ff8863;
-
-  --radius-field: 9999rem;
-  --radius-box: 1rem;
-  --tt-tailw: 6px;
-}
-
-@plugin "daisyui/theme" {
   name: "dark";
 
   --color-primary: #212638;
   --color-primary-content: #f9fbff;
   --color-secondary: #323f61;
   --color-secondary-content: #f9fbff;
-  --color-accent: #4969a6;
+  --color-accent: #04001a;
   --color-accent-content: #f9fbff;
   --color-neutral: #f9fbff;
   --color-neutral-content: #385183;
-  --color-base-100: #385183;
+  --color-base-100: #04001a;
   --color-base-200: #2a3655;
   --color-base-300: #212638;
   --color-base-content: #f9fbff;
@@ -61,6 +37,27 @@
 
   --tt-tailw: 6px;
   --tt-bg: var(--color-primary);
+}
+
+@plugin "daisyui/theme" {
+  name: "light";
+
+  --color-primary: #212638;
+  --color-primary-content: #f9fbff;
+  --color-secondary: #323f61;
+  --color-secondary-content: #f9fbff;
+  --color-accent: #04001a;
+  --color-accent-content: #f9fbff;
+  --color-neutral: #f9fbff;
+  --color-neutral-content: #385183;
+  --color-base-100: #04001a;
+  --color-base-200: #2a3655;
+  --color-base-300: #212638;
+  --color-base-content: #f9fbff;
+  --color-info: #385183;
+  --color-success: #34eeb6;
+  --color-warning: #ffcf72;
+  --color-error: #ff8863;
 }
 
 /*
@@ -86,6 +83,7 @@
 
   body {
     min-height: 100vh;
+    font-family: "Roboto", Arial, sans-serif;
   }
 
   h1,
@@ -94,6 +92,8 @@
   h4 {
     margin-bottom: 0.5rem;
     line-height: 1;
+    font-family: "Roboto", Arial, sans-serif;
+    letter-spacing: 1px;
   }
 }
 
@@ -104,6 +104,7 @@
 
 .btn {
   @apply shadow-md;
+  letter-spacing: 1px;
 }
 
 .btn.btn-ghost {
@@ -116,4 +117,8 @@
 
 .link:hover {
   opacity: 80%;
+}
+
+.league-title {
+  letter-spacing: 1px;
 }
