@@ -3,11 +3,11 @@ version: 0.1.0
 tee: tdx
 kind: container
 resources:
-  memory: 512
+  memory: 2048
   cpus: 1
   storage:
     kind: disk-persistent
-    size: 512
+    size: 5000
 artifacts:
   firmware: https://github.com/oasisprotocol/oasis-boot/releases/download/v0.4.2/ovmf.tdx.fd#db47100a7d6a0c1f6983be224137c3f8d7cb09b63bb1c7a5ee7829d8e994a42f
   kernel: https://github.com/oasisprotocol/oasis-boot/releases/download/v0.4.2/stage1.bin#02903bd0ddfe1e3552e95767f1be17e801690d73d90bb1e800aa4879ba46c4d7
@@ -17,14 +17,13 @@ artifacts:
     compose: compose.yaml
 deployments:
   default:
-    app_id: rofl1qzvg2nj6pqkfp05232wxy7ajzdl6zkc755xvecfl
+    app_id: rofl1qr4anf3pax28hhhmmjm67pp05caah5qw3sslq0k6
     network: testnet
     paratime: sapphire
     admin: bomdia
-    oci_repository: rofl.sh/8bc586bb-5d24-48a2-9b23-fa1b49d5fce0:1746883534
     trust_root:
-      height: 26533086
-      hash: 7506fa7dd8ab805435c83e98207177548f68242f2656f2f6e2bf9dc321b90ce7
+      height: 26534329
+      hash: 245d009dd2f7d48ea8213ab1fde7f56784725f251f513b5d7f5a31f46440b4ea
     policy:
       quotes:
         pcs:
@@ -32,14 +31,9 @@ deployments:
           min_tcb_evaluation_data_number: 18
           tdx: {}
       enclaves:
-        - id: kvlBEVTtefJJ1soipMIZO6h0tWEA9F+R5+4TyCWw7YwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==
-        - id: HX+W7dV3TOaaMZ8fAW9MRPlJMvd8LfHCpeHixRFKXpkAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==
+        - ZWo5RMYc0AZbWrpxpLO+aLBZ4gv9bfpUV6+Q4kGvapQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==
+        - DR/kZltwHer4UvwALE0/jM4fG4/bRChNAwi/1z581eoAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==
       endorsements:
         - any: {}
       fees: endorsing_node
       max_expiration: 3
-    machines:
-      default:
-        provider: oasis1qp2ens0hsp7gh23wajxa4hpetkdek3swyyulyrmz
-        offer: playground_short
-        id: 000000000000003e

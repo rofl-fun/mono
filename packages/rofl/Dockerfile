@@ -20,3 +20,4 @@ ENV HOST=0.0.0.0
 
 # Use uvicorn to run the FastAPI application
 CMD ["uvicorn", "monstr_relay:app", "--host", "0.0.0.0", "--port", "8080"]
+#CMD ["python", "monstr_relay.py"]

@@ -1,7 +1,7 @@
 services:
   rofl-fun:
     build: .
-    image: "ghcr.io/0xjsi/rofl-tgbot"
+    image: "docker.io/0xjsi/rofl-nostr-app"
     platform: linux/amd64
     ports:
       - "8080:8080"
