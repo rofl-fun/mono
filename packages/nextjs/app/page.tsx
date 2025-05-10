@@ -4,8 +4,13 @@ import { useState } from "react";
 import Link from "next/link";
 import groupsData from "./data/items.json"; // Assuming this path is correct relative to page.tsx
 import { formatDistanceToNow } from "date-fns";
-// import { useAccount } from "wagmi"; // Only if you need connectedAddress for something specific here
-// import { Address } from "~~/components/scaffold-eth"; // Only if displaying address
+import { useAccount } from "wagmi"; // Only if you need connectedAddress for something specific here
+import { Address } from "~~/components/scaffold-eth"; // Only if displaying address
+
+import { useScaffoldReadContract, useScaffoldWriteContract } from "~~/hooks/scaffold-eth";
+import { parseEther } from "viem";
+
+
 
 interface GroupInfo {
   id: number;
@@ -21,7 +26,27 @@ interface GroupInfo {
 }
 
 const Home = () => {
-  // const { address: connectedAddress } = useAccount(); // Restore if needed
+  const { address: connectedAddress } = useAccount(); // Restore if needed
+
+
+  const { data: hasAccess } = useScaffoldReadContract({
+    contractName: "ChatAccessNFT",
+    functionName: "hasAccess",
+    args: [connectedAddress, "bomdia"],
+  });
+
+  const { writeContractAsync: mintNFT } = useScaffoldWriteContract({
+    contractName: "ChatAccessNFT",
+  });
+
+  const { data: collectionInfo } = useScaffoldReadContract({
+    contractName: "ChatAccessNFT",
+    functionName: "getCollectionByChatId",
+    args: [""],
+  });
+
+
+
   const [sortBy, setSortBy] = useState<"members" | "pnl" | "price">("members");
 
   const formatNumber = (num: number) => {
@@ -30,6 +55,38 @@ const Home = () => {
       maximumFractionDigits: 2,
     }).format(num);
   };
+
+  const handleJoinGroup = async (group: GroupInfo) => {
+    if (!connectedAddress) return;
+
+    try {
+      const { data: groupCollection } = await useScaffoldReadContract({
+        contractName: "ChatAccessNFT",
+        functionName: "getCollectionByChatId",
+        args: [group.chatId],
+      });
+
+      if (!groupCollection) {
+        console.error("Collection not found for group:", group.name);
+        return;
+      }
+
+      const [collectionId, , price] = groupCollection as CollectionInfo;
+
+      await mintNFT({
+        functionName: "mint",
+        args: [connectedAddress, collectionId],
+        value: price,
+      });
+    } catch (error) {
+      console.error("Error joining group:", error);
+    }
+  };
+
+  const groupsWithChatId: GroupInfo[] = groupsData.groups.map(group => ({
+    ...group,
+    chatId: `group-${group.id}`,
+  }));
 
   const filteredAndSortedGroups = groupsData.groups
     .sort((a: GroupInfo, b: GroupInfo) => {
@@ -70,7 +127,7 @@ const Home = () => {
           </button>
         </Link>
       </div>
-      
+
       <div className="container mx-auto px-4">
         {/* Search and Sort Controls */}
         <div className="mb-8 p-4 bg-base-100 rounded-xl shadow">
