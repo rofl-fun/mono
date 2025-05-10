@@ -66,6 +66,6 @@ async def get_chat_feed_of(user: str):
     return res
 
 @app.get("/v1/historyOf/{chat}")
-def get_history_of(chat: str):
+async def get_history_of(chat: str):
     chat_inst: "Chat" = await get_chat(chat)
 
