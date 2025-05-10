@@ -5,14 +5,14 @@ import json
 from utils.rofl_status import RoflStatus
 from monstr.client.client import Client
 from monstr.event.event import Event
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Optional
 from v1.config.database import get_database
 from v1.models.chat_db import ChatDB
 
 if TYPE_CHECKING:
     from v1.processors.user import User
 
-nostr_url = "http://localhost:8082"
+nostr_url = "http://monstr:8082"
 
 class Message:
     def __init__(self, sender: str, message: str, chat_id: str):
@@ -125,3 +125,47 @@ class Chat:
             return None
         else:
             return self.message[self.amount_of_messages - 1]
+
+async def get_chat(id: str) -> Optional["Chat"]:
+    """Retrieves a chat from the Nostr relay."""
+    async with Client(nostr_url) as client:
+        # Query for the channel create event
+        events = await client.query({
+            "kinds": [Event.KIND_CHANNEL_CREATE],
+            "ids": [id]
+        })
+
+        if not events:
+            return None
+
+        event = events[0]
+        content = json.loads(event.content)
+
+        # Create a new Chat instance
+        chat = Chat(
+            creator=event.pub_key,
+            name=content["name"],
+            description=content.get("about", ""),
+            id=event.id
+        )
+
+        # Get channel messages
+        messages = await client.query({
+            "kinds": [Event.KIND_CHANNEL_MESSAGE],
+            "#e": [id]
+        })
+
+        # Convert messages to Message objects
+        chat.messages = [
+            Message(
+                sender=msg.pub_key,
+                message=msg.content,
+                chat_id=id
+            ) for msg in messages
+        ]
+
+        chat.amount_of_messages = len(chat.messages)
+        if chat.messages:
+            chat.last_msg_at = chat.messages[-1].sent_at
+
+        return chat
