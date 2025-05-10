@@ -20,7 +20,7 @@ class User:
     @classmethod
     async def create(cls, display_name: str, uuid: str) -> "RoflStatus":
         new_user = cls(display_name=display_name, uuid=uuid)
-        #await save_user(new_user)
+        await save_user(new_user)
         return RoflStatus.SUCCESS.create(f"Created User {new_user.uuid}", new_user.to_dict())
 
     async def join_chat(self, chat_id: str) -> "RoflStatus":

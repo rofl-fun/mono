@@ -1,33 +1,39 @@
+#from uuid import UUID
+from pydantic import BaseModel
 from fastapi import FastAPI, Request
-from v1.processors.user import User
-from utils.rofl_status import RoflStatus, Error as RoflError
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
+from v1.processors.user import User
+from utils.rofl_status import RoflStatus, Error as RoflError
+
+class NewUser(BaseModel):
+    uuid: str
+    display_name: str
 
 app = FastAPI()
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # Allows all origins
+    allow_origins=["*"],
     allow_credentials=True,
-    allow_methods=["*"],  # Allows all methods
-    allow_headers=["*"],  # Allows all headers
+    allow_methods=["*"],
+    allow_headers=["*"],
 )
-
-@app.exception_handler(RoflError)
-async def custom_error_handler(request: Request, exc: RoflError):
-    exc.log()
-    return JSONResponse(
-        status_code=400, content={"error": exc.message, "details": exc.value}
-    )
 
 @app.get("/")
 def idle():
     return {"status": "i'm alive"}
 
 @app.post("/v1/user/new")
-async def new_user(uuid: str, display_name: str):
-    res = await User.create(display_name=display_name, uuid=uuid)
+async def new_user(user: NewUser):
+    res = await User.create(display_name=user.display_name, uuid=user.uuid)
     return res
+
+#@app.post("/v1/user/new")
+#async def new_user(uuid: str, display_name: str):
+    #return {"uuid": uuid, "display_name": display_name}
+    #res = await User.create(display_name=display_name, uuid=uuid)
+    #return res
 
 # @app.post("/v1/join")
 # def join_group():
