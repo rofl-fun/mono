@@ -2,17 +2,14 @@ from __future__ import annotations
 import uuid
 import time
 import json
-#import os
 from utils.rofl_status import RoflStatus
 from monstr.client.client import Client
 from monstr.event.event import Event
-#from dotenv import load_dotenv
 from typing import TYPE_CHECKING  
 if TYPE_CHECKING:
     from v1.processors.user import User
 
 nostr_url = "http://localhost:8082"
-#os.environ.get("NOSTR_URL")
 
 class Message:
     def __init__(self, sender: str, message: str, chat_id: str):

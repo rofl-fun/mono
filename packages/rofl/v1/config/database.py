@@ -1,13 +1,9 @@
 from motor.motor_asyncio import AsyncIOMotorClient
 from typing import Optional
-import os
-from dotenv import load_dotenv
-
-load_dotenv()
 
 # MongoDB connection settings
-MONGODB_URL = os.environ.get("MONGODB_URL", "mongodb://localhost:27017")
-DATABASE_NAME = os.environ.get("DATABASE_NAME", "rofl_db")
+MONGODB_URL = "mongodb://localhost:27017"
+DATABASE_NAME = "rofl_db"
 
 # Global client instance
 _client: Optional[AsyncIOMotorClient] = None
