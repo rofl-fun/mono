@@ -5,10 +5,9 @@ import json
 from utils.rofl_status import RoflStatus
 from monstr.client.client import Client
 from monstr.event.event import Event
-from typing import TYPE_CHECKING, Optional
+from typing import TYPE_CHECKING
 from v1.config.database import get_database
 from v1.models.chat_db import ChatDB
-from v1.processors.users import get_user
 
 if TYPE_CHECKING:
     from v1.processors.user import User

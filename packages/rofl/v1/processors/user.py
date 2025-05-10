@@ -1,7 +1,9 @@
 from v1.processors.chat import get_chat, Chat, Message
 from utils.rofl_status import RoflStatus
 from monstr.encrypt import Keys
-from v1.processors.users import save_user
+from typing import Optional
+from v1.models.user_db import UserDB
+from v1.config.database import get_database
 
 class User:
     def __init__(self, display_name: str, uuid: str):
@@ -70,3 +72,44 @@ class User:
         chat: Chat = Chat.create(self, name=name, description=description, image_url=image_url)
         self.join_chat(chat.uuid)
         return RoflStatus.SUCCESS.create(f"Created new chat {chat.uuid} successfully!!!")
+
+
+async def get_user(uuid: str) -> Optional["User"]:
+    """Retrieves a user from MongoDB and returns a full User instance."""
+    db = await get_database()
+    user_data = await db.users.find_one({"uuid": uuid})
+    if not user_data:
+        return None
+
+    user_db = UserDB(**user_data)
+    return _user_db_to_user(user_db)
+
+def _user_db_to_user(user_db: UserDB) -> "User":
+    """Converts a UserDB instance to a full User instance."""
+    # Create a new User instance
+    user = User(user_db.display_name, user_db.uuid)
+
+    # Set up the nostr keys
+    user.nostr_key = Keys(user_db.nostr_private_key)
+
+    # Set the joined chats
+    user.joined_chats = user_db.joined_chats.copy()
+
+    return user
+
+async def save_user(user: "User") -> None:
+    """Saves the current state of a User instance back to MongoDB."""
+    user_db = UserDB(
+        display_name=user.display_name,
+        uuid=user.uuid,
+        nostr_public_key=user.nostr_key.public_key_hex(),
+        nostr_private_key=user.nostr_key.private_key_hex(),
+        joined_chats=user.joined_chats.copy()
+    )
+
+    db = await get_database()
+    await db.users.update_one(
+        {"uuid": user.uuid},
+        {"$set": user_db.dict()},
+        upsert=True
+    )

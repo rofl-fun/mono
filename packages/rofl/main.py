@@ -1,12 +1,8 @@
-#from uuid import UUID
 from pydantic import BaseModel
-from fastapi import FastAPI, Request
+from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import JSONResponse
-from v1.processors.user import User
-from v1.processors.users import get_user
+from v1.processors.user import get_user, User
 from v1.processors.chat import get_chat, Chat
-from utils.rofl_status import RoflStatus, Error as RoflError
 
 class NewUser(BaseModel):
     uuid: str
