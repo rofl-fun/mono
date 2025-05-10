@@ -6,19 +6,21 @@ RUN apk add --no-cache \
     gcc \
     musl-dev \
     libffi-dev \
-    openssl-dev
+    openssl-dev \
+    make
 
 WORKDIR /app
 COPY . .
 RUN pip install -r requirements.txt
 
-# Expose the port
-EXPOSE 8080
+# Make the start script executable
+RUN chmod +x start.sh
 
 # Set environment variable to bind to all interfaces
 ENV HOST=0.0.0.0
 
-# Use uvicorn to run the FastAPI application
-#CMD ["uvicorn", "monstr_relay:app", "--host", "0.0.0.0", "--port", "8080"]
-CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8080"]
-#CMD ["python", "monstr_relay.py"]
+# Expose the ports
+EXPOSE 8080 8081 8082
+
+# Use the start script to run both applications
+CMD ["./start.sh"]
