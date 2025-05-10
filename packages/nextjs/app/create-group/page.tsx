@@ -2,17 +2,58 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
+import { useAccount } from 'wagmi';
 
 const CreateGroupPage = () => {
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const { address } = useAccount();
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log('New group created:', { title, description });
-    alert(`Group '${title}' created (see console for details)!`);
-    setTitle('');
-    setDescription('');
+    if (!address) {
+      setError('Please connect your wallet first');
+      return;
+    }
+
+    setIsLoading(true);
+    setError(null);
+
+    try {
+      const response = await fetch('http://localhost:8080/v1/create/', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          user_id: address,
+          name: title,
+          description: description,
+          image_url: ''
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to create group');
+      }
+
+      const result = await response.json();
+      console.log('Group created:', result);
+
+      // Clear form
+      setTitle('');
+      setDescription('');
+
+      // Redirect to groups page or show success message
+      window.location.href = '/groups';
+    } catch (err) {
+      console.error('Error creating group:', err);
+      setError('Failed to create group. Please try again.');
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -26,6 +67,12 @@ const CreateGroupPage = () => {
             </button>
           </Link>
         </div>
+
+        {error && (
+          <div className="alert alert-error mb-4">
+            <span>{error}</span>
+          </div>
+        )}
 
         <form onSubmit={handleSubmit} className="space-y-6">
           <div>
@@ -61,9 +108,10 @@ const CreateGroupPage = () => {
           <div>
             <button
               type="submit"
-              className="w-full btn btn-primary btn-lg hover:scale-[1.02] transition-transform"
+              disabled={isLoading}
+              className="w-full btn btn-primary btn-lg hover:scale-[1.02] transition-transform disabled:opacity-50"
             >
-              Create Group
+              {isLoading ? 'Creating...' : 'Create Group'}
             </button>
           </div>
         </form>
