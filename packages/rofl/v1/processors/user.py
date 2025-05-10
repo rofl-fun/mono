@@ -1,11 +1,13 @@
 from v1.processors.chat import get_chat, Chat, Message
 from utils.rofl_status import RoflStatus
+from monstr.src.monstr.encrypt import Keys
 
 class User:
     def __init__(self, display_name: str, uid: str):
         self.display_name = display_name
         self.uuid = uid
         self.joined_chats = []
+        self.keys = Keys()
 
     def join_chat(self, chat_id: str) -> RoflStatus:
         if chat_id in self.joined_chats:

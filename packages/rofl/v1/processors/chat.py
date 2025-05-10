@@ -2,6 +2,7 @@ import uuid
 import time
 from v1.processors.user import User
 from utils.rofl_status import RoflStatus
+from monstr.src.monstr.client.client import Client
 
 class Message:
     def __init__(self, sender: str, message: str, chat_id: str):
