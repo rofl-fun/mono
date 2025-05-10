@@ -3,15 +3,12 @@ pragma solidity >=0.8.0 <0.9.0;
 
 import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
-import "@openzeppelin/contracts/utils/Counters.sol";
 
 /**
  * @title ChatAccessNFT
  * @dev NFT contract for tokengated chat access
  */
 contract ChatAccessNFT is ERC721, Ownable {
-    using Counters for Counters.Counter;
-
     // Constants
     uint256 private constant PLATFORM_FEE = 500; // 5% (out of 10000)
     uint256 private constant FEE_DENOMINATOR = 10000;
@@ -25,11 +22,12 @@ contract ChatAccessNFT is ERC721, Ownable {
     }
 
     // State variables
-    Counters.Counter private _tokenIdCounter;
-    Counters.Counter private _collectionIdCounter;
+    uint256 private _nextTokenId;
+    uint256 private _nextCollectionId;
 
     mapping(uint256 => ChatCollection) public collections; // collectionId => ChatCollection
     mapping(uint256 => uint256) public tokenCollection; // tokenId => collectionId
+    mapping(string => uint256) public chatIdToCollection; // chatId => collectionId
 
     // Events
     event ChatCollectionCreated(uint256 indexed collectionId, address indexed creator, uint256 price, string chatId);
@@ -44,8 +42,10 @@ contract ChatAccessNFT is ERC721, Ownable {
      * @param chatId Unique identifier for the chat room
      */
     function createChatCollection(uint256 price, string calldata chatId) external returns (uint256) {
-        uint256 collectionId = _collectionIdCounter.current();
-        _collectionIdCounter.increment();
+        // Ensure chatId doesn't already exist
+        require(chatIdToCollection[chatId] == 0, "Chat ID already exists");
+
+        uint256 collectionId = _nextCollectionId++;
 
         collections[collectionId] = ChatCollection({
             creator: msg.sender,
@@ -54,8 +54,30 @@ contract ChatAccessNFT is ERC721, Ownable {
             exists: true
         });
 
+        // Store the reverse mapping
+        chatIdToCollection[chatId] = collectionId;
+
         emit ChatCollectionCreated(collectionId, msg.sender, price, chatId);
         return collectionId;
+    }
+
+    /**
+     * @dev Gets collection info by chat ID
+     * @param chatId The chat ID to look up
+     * @return collectionId The ID of the collection
+     * @return creator The address of the collection creator
+     * @return price The price to mint an NFT from this collection
+     */
+    function getCollectionByChatId(string calldata chatId) external view returns (
+        uint256 collectionId,
+        address creator,
+        uint256 price
+    ) {
+        collectionId = chatIdToCollection[chatId];
+        require(collections[collectionId].exists, "Chat collection does not exist");
+
+        ChatCollection memory collection = collections[collectionId];
+        return (collectionId, collection.creator, collection.price);
     }
 
     /**
@@ -76,8 +98,7 @@ contract ChatAccessNFT is ERC721, Ownable {
         require(success, "Failed to send payment to creator");
 
         // Mint the token
-        uint256 tokenId = _tokenIdCounter.current();
-        _tokenIdCounter.increment();
+        uint256 tokenId = _nextTokenId++;
         _safeMint(msg.sender, tokenId);
         tokenCollection[tokenId] = collectionId;
 
@@ -102,7 +123,6 @@ contract ChatAccessNFT is ERC721, Ownable {
      * @param tokenId The ID of the token
      */
     function getChatId(uint256 tokenId) external view returns (string memory) {
-        require(_exists(tokenId), "Token does not exist");
         return collections[tokenCollection[tokenId]].chatId;
     }
 
@@ -113,8 +133,8 @@ contract ChatAccessNFT is ERC721, Ownable {
      */
     function hasAccess(address user, string calldata chatId) external view returns (bool) {
         uint256 balance = balanceOf(user);
-        for (uint256 i = 0; i < _tokenIdCounter.current(); i++) {
-            if (_exists(i) && ownerOf(i) == user) {
+        for (uint256 i = 0; i < _nextTokenId; i++) {
+            if (ownerOf(i) == user) {
                 if (keccak256(bytes(collections[tokenCollection[i]].chatId)) == keccak256(bytes(chatId))) {
                     return true;
                 }
