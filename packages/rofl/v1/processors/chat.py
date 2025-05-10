@@ -38,6 +38,23 @@ class Chat:
         self.members = []
         self.uuid = id
 
+    @classmethod
+    async def create(cls, creator: "User", name: str, description: str = "", image_url: str = "") -> "Chat":
+        async with Client(nostr_url) as client:
+            event = Event(kind=Event.KIND_CHANNEL_CREATE,
+                content=json.dumps({
+                    "name": name,
+                    "about": description,
+                    "picture": image_url,
+                }),
+                pub_key=creator.nostr_key.public_key_hex())
+            event.sign(creator.nostr_key.private_key_hex())
+            client.publish(event)
+
+        chat = cls(creator=creator, name=name, description=description, id=event.id)
+        await chat.save()
+        return chat
+
     async def save(self) -> None:
         """Saves the current state of the Chat instance to MongoDB."""
         chat_db = ChatDB(
@@ -64,23 +81,6 @@ class Chat:
             {"$set": chat_db.dict()},
             upsert=True
         )
-
-    @classmethod
-    async def create(cls, creator: "User", name: str, description: str = "", image_url: str = "") -> "Chat":
-        async with Client(nostr_url) as client:
-            event = Event(kind=Event.KIND_CHANNEL_CREATE,
-                content=json.dumps({
-                    "name": name,
-                    "about": description,
-                    "picture": image_url,
-                }),
-                pub_key=creator.nostr_key.public_key_hex())
-            event.sign(creator.nostr_key.private_key_hex())
-            client.publish(event)
-
-        chat = cls(creator=creator, name=name, description=description, id=event.id)
-        await chat.save()
-        return chat
 
     async def new_message(self, user: "User", message: str) -> "RoflStatus":
         if self.uuid not in user.joined_chats:

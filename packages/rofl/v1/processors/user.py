@@ -65,3 +65,8 @@ class User:
 
         # Return the result
         return RoflStatus.SUCCESS.create(f"Chatfeed of {self.uuid}:", feed)
+
+    async def create_chat(self, name: str, description: str, image_url: str) -> "RoflStatus":
+        chat: Chat = Chat.create(self, name=name, description=description, image_url=image_url)
+        self.join_chat(chat.uuid)
+        return RoflStatus.SUCCESS.create(f"Created new chat {chat.uuid} successfully!!!")
