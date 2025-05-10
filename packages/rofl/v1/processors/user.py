@@ -10,11 +10,18 @@ class User:
         self.joined_chats: list[str] = []
         self.nostr_key = Keys()
 
+    def to_dict(self):
+        return {
+            "display_name": self.display_name,
+            "uuid": self.uuid,
+            "joined_chats": self.joined_chats
+        }
+
     @classmethod
     async def create(cls, display_name: str, uuid: str) -> "RoflStatus":
         new_user = cls(display_name=display_name, uuid=uuid)
         #await save_user(new_user)
-        return RoflStatus.SUCCESS.create(f"Created User {new_user.uuid}", new_user)
+        return RoflStatus.SUCCESS.create(f"Created User {new_user.uuid}", new_user.to_dict())
 
     async def join_chat(self, chat_id: str) -> "RoflStatus":
         if chat_id in self.joined_chats:

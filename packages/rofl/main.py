@@ -1,16 +1,32 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, Request
 from v1.processors.user import User
-from utils.rofl_status import RoflStatus
+from utils.rofl_status import RoflStatus, Error as RoflError
+from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import JSONResponse
 
 app = FastAPI()
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  # Allows all origins
+    allow_credentials=True,
+    allow_methods=["*"],  # Allows all methods
+    allow_headers=["*"],  # Allows all headers
+)
+
+@app.exception_handler(RoflError)
+async def custom_error_handler(request: Request, exc: RoflError):
+    exc.log()
+    return JSONResponse(
+        status_code=400, content={"error": exc.message, "details": exc.value}
+    )
 
 @app.get("/")
 def idle():
     return {"status": "i'm alive"}
 
 @app.post("/v1/user/new")
-async def new_user(uuid="aa", display_name=id):
-    res  = await User.create(display_name=display_name, uuid=uuid)
+async def new_user(uuid: str, display_name: str):
+    res = await User.create(display_name=display_name, uuid=uuid)
     return res
 
 # @app.post("/v1/join")
