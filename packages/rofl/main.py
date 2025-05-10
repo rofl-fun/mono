@@ -9,7 +9,7 @@ def idle():
 
 @app.post("/v1/user/new")
 def new_user(uuid: str, display_name=id):
-    User.create(display_name=display_name, uid=uuid)
+    return User.create(display_name=display_name, uid=uuid)
 
 # @app.post("/v1/join")
 # def join_group():
