@@ -8,8 +8,15 @@ RUN apk add --no-cache \
     libffi-dev \
     openssl-dev
 
-WORKDIR /
-COPY ./main.py ./requirements.txt /
+WORKDIR /app
+COPY . .
 RUN pip install -r requirements.txt
 
-ENTRYPOINT ["python", "main.py"]
+# Expose the port
+EXPOSE 8080
+
+# Set environment variable to bind to all interfaces
+ENV HOST=0.0.0.0
+
+# Use uvicorn to run the FastAPI application
+CMD ["uvicorn", "monstr_relay:app", "--host", "0.0.0.0", "--port", "8080"]
