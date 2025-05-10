@@ -9,3 +9,12 @@ async def run_relay():
 if __name__ == '__main__':
     logging.getLogger().setLevel(logging.DEBUG)
     asyncio.run(run_relay())
+
+from fastapi import FastAPI
+
+app = FastAPI()
+
+@app.get("/")
+def idle():
+    return {"status": "i'm alive"}
+

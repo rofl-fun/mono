@@ -19,7 +19,7 @@ def get_chat(id: str) -> "Chat":
     pass 
 
 class Chat:
-    async def __init__(self, creator: "User", name: str, description: str, image_url: str):
+    def __init__(self, creator: "User", name: str, description: str, id: str):
         self.creator = creator.uuid
         self.name = name
         self.description = description
@@ -28,18 +28,21 @@ class Chat:
         self.amount_of_members = 0
         self.amount_of_messages = 0
         self.members = []
+        self.uuid = id
+
+    @classmethod
+    async def create(cls, creator: "User", name: str, description: str = "", image_url: str = "") -> "Chat":
         async with Client(url) as client:
             event = Event(kind=Event.KIND_CHANNEL_CREATE,
                 content=json.dumps({
                     "name": name,
                     "about": description,
-                    "picture": image_url
+                    "picture": image_url,
                 }),
                 pub_key=creator.nostr_key.public_key_hex())
             event.sign(creator.nostr_key.private_key_hex())
             client.publish(event)
-        self.uuid = event.id
-
+        return cls(creator=creator, name=name, description=description, id=event.id)
 
     async def new_message(self, user: "User", message: str) -> RoflStatus:
         new_user_message = Message(user.uuid, message, self.uuid)
@@ -54,7 +57,6 @@ class Chat:
                 pub_key=user.nostr_key.public_key_hex())
             event.sign(user.nostr_key.private_key_hex())
             client.publish(event)
-
         return RoflStatus.SUCCESS.create(f"Managed to send the new message from {user.uuid}", new_user_message)
 
     def join_chat(self, user: "User") -> RoflStatus:
