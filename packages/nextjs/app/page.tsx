@@ -4,6 +4,8 @@ import { useAccount } from "wagmi";
 import { Address } from "~~/components/scaffold-eth";
 import { formatDistanceToNow } from "date-fns";
 import groupsData from "./data/items.json";
+import { useScaffoldReadContract, useScaffoldWriteContract } from "~~/hooks/scaffold-eth";
+import { parseEther } from "viem";
 
 interface GroupInfo {
   id: number;
@@ -16,10 +18,29 @@ interface GroupInfo {
   description: string;
   trend: string;
   lastActive: string;
+  chatId: string;
 }
+
+type CollectionInfo = [bigint, string, bigint]; // [collectionId, creator, price]
 
 const Home = () => {
   const { address: connectedAddress } = useAccount();
+
+  const { data: hasAccess } = useScaffoldReadContract({
+    contractName: "ChatAccessNFT",
+    functionName: "hasAccess",
+    args: [connectedAddress, "bomdia"],
+  });
+
+  const { writeContractAsync: mintNFT } = useScaffoldWriteContract({
+    contractName: "ChatAccessNFT",
+  });
+
+  const { data: collectionInfo } = useScaffoldReadContract({
+    contractName: "ChatAccessNFT",
+    functionName: "getCollectionByChatId",
+    args: [""],
+  });
 
   const formatNumber = (num: number) => {
     return new Intl.NumberFormat('en-US', {
@@ -27,6 +48,38 @@ const Home = () => {
       maximumFractionDigits: 2,
     }).format(num);
   };
+
+  const handleJoinGroup = async (group: GroupInfo) => {
+    if (!connectedAddress) return;
+
+    try {
+      const { data: groupCollection } = await useScaffoldReadContract({
+        contractName: "ChatAccessNFT",
+        functionName: "getCollectionByChatId",
+        args: [group.chatId],
+      });
+
+      if (!groupCollection) {
+        console.error("Collection not found for group:", group.name);
+        return;
+      }
+
+      const [collectionId, , price] = groupCollection as CollectionInfo;
+
+      await mintNFT({
+        functionName: "mint",
+        args: [connectedAddress, collectionId],
+        value: price,
+      });
+    } catch (error) {
+      console.error("Error joining group:", error);
+    }
+  };
+
+  const groupsWithChatId: GroupInfo[] = groupsData.groups.map(group => ({
+    ...group,
+    chatId: `group-${group.id}`,
+  }));
 
   return (
     <div className="min-h-screen bg-base-100">
@@ -40,7 +93,7 @@ const Home = () => {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {groupsData.groups.map((group: GroupInfo) => (
+          {groupsWithChatId.map((group: GroupInfo) => (
             <div
               key={group.id}
               className="bg-base-200 rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-shadow"
@@ -84,9 +137,22 @@ const Home = () => {
                   Last active: {formatDistanceToNow(new Date(group.lastActive), { addSuffix: true })}
                 </div>
 
-                <button className="w-full mt-4 btn btn-primary">
-                  Join Group
-                </button>
+                {!connectedAddress ? (
+                  <button className="w-full mt-4 btn btn-primary" disabled>
+                    Connect Wallet
+                  </button>
+                ) : hasAccess ? (
+                  <button className="w-full mt-4 btn btn-primary">
+                    View Group
+                  </button>
+                ) : (
+                  <button
+                    className="w-full mt-4 btn btn-primary"
+                    onClick={() => handleJoinGroup(group)}
+                  >
+                    Buy Access ({formatNumber(group.joinPrice)} {group.currency})
+                  </button>
+                )}
               </div>
             </div>
           ))}
