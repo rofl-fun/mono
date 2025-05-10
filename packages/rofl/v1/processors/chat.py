@@ -19,7 +19,7 @@ class Message:
         self.sent_at = time.time()
         self.chat_id = chat_id
 
-def get_chat(id: str) -> "Chat":
+async def get_chat(id: str) -> "Chat":
     pass 
 
 class Chat:
