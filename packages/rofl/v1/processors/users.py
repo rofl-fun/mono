@@ -3,8 +3,7 @@ from typing import Optional
 from v1.models.user_db import UserDB
 from monstr.encrypt import Keys
 from v1.config.database import get_database
-from typing import TYPE_CHECKING  
-
+from typing import TYPE_CHECKING
 if TYPE_CHECKING:
     from v1.processors.user import User
 

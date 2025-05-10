@@ -8,9 +8,7 @@ from utils.rofl_status import RoflStatus
 from monstr.client.client import Client
 from monstr.event.event import Event
 from dotenv import load_dotenv
-
 from typing import TYPE_CHECKING  
-
 if TYPE_CHECKING:
     from v1.processors.user import User
 
