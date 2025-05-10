@@ -1,10 +1,15 @@
-# from fastapi import FastAPI
+from fastapi import FastAPI
+from v1.processors.user import User
 
-# app = FastAPI()
+app = FastAPI()
 
-# @app.get("/")
-# def idle():
-    # return {"status": "i'm alive"}
+@app.get("/")
+def idle():
+    return {"status": "i'm alive"}
+
+@app.post("/v1/user/new")
+def new_user(uuid: str, display_name=id):
+    User.create(display_name=display_name, uid=uuid)
 
 # @app.post("/v1/join")
 # def join_group():

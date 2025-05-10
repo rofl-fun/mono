@@ -1,6 +1,7 @@
 from v1.processors.chat import get_chat, Chat, Message
 from utils.rofl_status import RoflStatus
 from monstr.src.monstr.encrypt import Keys
+from v1.processors.users import save_user
 
 class User:
     def __init__(self, display_name: str, uid: str):
@@ -9,13 +10,18 @@ class User:
         self.joined_chats: list[str] = []
         self.nostr_key = Keys()
 
+    @classmethod
+    async def create(cls, display_name: str, uid: str) -> RoflStatus:
+        new_user = cls(display_name=display_name, uid=uid)
+        await save_user(new_user)
+        return RoflStatus.SUCCESS.create(f"Created User {new_user.uuid}", new_user)
+
     async def join_chat(self, chat_id: str) -> RoflStatus:
         if chat_id in self.joined_chats:
             return RoflStatus.ERROR.create(f"User {self.uuid} is already in chat {chat_id}")
         chat: "Chat" = get_chat(chat_id)
         self.joined_chats.append(chat.uuid)
         # Save the updated state
-        from v1.processors.users import save_user
         await save_user(self)
         return chat.join_chat(self)
 
@@ -25,7 +31,6 @@ class User:
         chat: "Chat" = get_chat(chat_id)
         self.joined_chats.remove(chat.uuid)
         # Save the updated state
-        from v1.processors.users import save_user
         await save_user(self)
         return chat.leave_chat(self)
 
