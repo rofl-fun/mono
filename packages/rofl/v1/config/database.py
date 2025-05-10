@@ -2,7 +2,7 @@ from motor.motor_asyncio import AsyncIOMotorClient
 from typing import Optional
 
 # MongoDB connection settings
-MONGODB_URL = "mongodb://localhost:27017"
+MONGODB_URL = "mongodb://admin:password123@rofl_mongodb:27017"
 DATABASE_NAME = "rofl_db"
 
 # Global client instance
