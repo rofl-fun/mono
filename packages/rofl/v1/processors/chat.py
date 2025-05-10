@@ -22,9 +22,6 @@ class Message:
         self.sent_at = time.time()
         self.chat_id = chat_id
 
-def get_chat(id: str) -> "Chat":
-    pass
-
 class Chat:
     def __init__(self, creator: "User", name: str, description: str, id: str):
         self.creator = creator.uuid
@@ -126,7 +123,7 @@ class Chat:
         else:
             return self.message[self.amount_of_messages - 1]
 
-async def get_chat(id: str) -> Optional["Chat"]:
+async def get_chat(id: str, user: "User") -> Optional["Chat"]:
     """Retrieves a chat from the Nostr relay."""
     async with Client(nostr_url) as client:
         # Query for the channel create event
@@ -143,7 +140,7 @@ async def get_chat(id: str) -> Optional["Chat"]:
 
         # Create a new Chat instance
         chat = Chat(
-            creator=event.pub_key,
+            creator=user,
             name=content["name"],
             description=content.get("about", ""),
             id=event.id

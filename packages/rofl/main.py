@@ -57,7 +57,13 @@ async def leave_group(params: ChatAction):
 @app.post("/v1/message")
 async def message(params: NewMessage):
     user: "User" = await get_user(params.user_id)
-    chat: "Chat" = await get_chat(params.chat_id)
+    if not user:
+        return {"error": "User not found"}
+
+    chat: "Chat" = await get_chat(params.chat_id, user)
+    if not chat:
+        return {"error": "Chat not found"}
+
     res = await chat.new_message(user, params.message)
     return res
 
