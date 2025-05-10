@@ -1,9 +1,10 @@
 import { FC, useState } from "react";
 import { GroupProfile } from "@circles-sdk/profiles";
 import { useCircles } from "~~/app/context/CirclesContext";
+import { Sdk } from "@circles-sdk/sdk";
 
 interface CreateGroupProps {
-  sdk: any;
+  sdk: Sdk;
   onGroupCreated?: (groupAddress: string) => void;
 }
 
@@ -51,7 +52,6 @@ export const CreateGroup: FC<CreateGroupProps> = ({ sdk, onGroupCreated }) => {
         standardMintPolicy,
         groupProfile
       });
-
       const groupAvatar = await sdk.registerGroupV2(standardMintPolicy, groupProfile);
       console.log("[CreateGroup] registerGroupV2 result:", groupAvatar);
 

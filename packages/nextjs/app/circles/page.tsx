@@ -30,7 +30,35 @@ export default function CirclesPage() {
             Go to Onboarding
           </Link>
 
-          {/* Add more navigation links here as we add more features */}
+          <div className="divider">Groups</div>
+
+          <Link
+            href="/circles/groups"
+            className="btn btn-secondary w-full text-lg"
+          >
+            My Groups
+          </Link>
+
+          <Link
+            href="/circles/groups/discover"
+            className="btn btn-secondary w-full text-lg"
+          >
+            Discover Groups
+          </Link>
+
+          <Link
+            href="/circles/groups/join"
+            className="btn btn-secondary w-full text-lg"
+          >
+            Join Group by Address
+          </Link>
+
+          <Link
+            href="/circles/groups/create"
+            className="btn btn-secondary w-full text-lg"
+          >
+            Create New Group
+          </Link>
         </div>
 
         {connectedAddress && (
