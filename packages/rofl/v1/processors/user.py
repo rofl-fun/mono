@@ -26,26 +26,33 @@ class User:
     async def join_chat(self, chat_id: str) -> "RoflStatus":
         if chat_id in self.joined_chats:
             return RoflStatus.ERROR.create(f"User {self.uuid} is already in chat {chat_id}")
-        chat: "Chat" = get_chat(chat_id)
+        chat = await get_chat(chat_id)
+        if not chat:
+            return RoflStatus.ERROR.create(f"Chat {chat_id} not found")
         self.joined_chats.append(chat.uuid)
         # Save the updated state
         await save_user(self)
-        return chat.join_chat(self)
+        return await chat.join_chat(self)
 
     async def leave_chat(self, chat_id: str) -> "RoflStatus":
         if chat_id not in self.joined_chats:
             return RoflStatus.ERROR.create(f"User {self.uuid} isn't in chat {chat_id}")
-        chat: "Chat" = get_chat(chat_id)
+        chat = await get_chat(chat_id)
+        if not chat:
+            return RoflStatus.ERROR.create(f"Chat {chat_id} not found")
         self.joined_chats.remove(chat.uuid)
         # Save the updated state
         await save_user(self)
-        return chat.leave_chat(self)
+        return await chat.leave_chat(self)
 
-    def get_chat_feed(self) -> "RoflStatus":
+    async def get_chat_feed(self) -> "RoflStatus":
         feed: list["Message"] = []
         for chat_id in self.joined_chats:
+            chat = await get_chat(chat_id)
+            if not chat:
+                continue
             # Create a list of the chats that this user is in, but only get the last messages
-            match get_chat(chat_id).get_last_message():
+            match chat.get_last_message():
                 # If nothing is returned from current index, just skip :)
                 case None:
                     continue

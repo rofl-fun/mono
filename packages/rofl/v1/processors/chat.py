@@ -1,11 +1,15 @@
-from __future__ import annotations 
+from __future__ import annotations
 import uuid
 import time
 import json
 from utils.rofl_status import RoflStatus
 from monstr.client.client import Client
 from monstr.event.event import Event
-from typing import TYPE_CHECKING  
+from typing import TYPE_CHECKING, Optional
+from v1.config.database import get_database
+from v1.models.chat_db import ChatDB
+from v1.processors.users import get_user
+
 if TYPE_CHECKING:
     from v1.processors.user import User
 
@@ -19,8 +23,8 @@ class Message:
         self.sent_at = time.time()
         self.chat_id = chat_id
 
-async def get_chat(id: str) -> "Chat":
-    pass 
+def get_chat(id: str) -> "Chat":
+    pass
 
 class Chat:
     def __init__(self, creator: "User", name: str, description: str, id: str):
@@ -34,6 +38,33 @@ class Chat:
         self.members = []
         self.uuid = id
 
+    async def save(self) -> None:
+        """Saves the current state of the Chat instance to MongoDB."""
+        chat_db = ChatDB(
+            uuid=self.uuid,
+            creator=self.creator,
+            name=self.name,
+            description=self.description,
+            messages=[{
+                "sender": msg.sender,
+                "message": msg.message,
+                "uuid": msg.uuid,
+                "sent_at": msg.sent_at,
+                "chat_id": msg.chat_id
+            } for msg in self.messages],
+            last_msg_at=self.last_msg_at,
+            amount_of_members=self.amount_of_members,
+            amount_of_messages=self.amount_of_messages,
+            members=self.members.copy()
+        )
+
+        db = await get_database()
+        await db.chats.update_one(
+            {"uuid": self.uuid},
+            {"$set": chat_db.dict()},
+            upsert=True
+        )
+
     @classmethod
     async def create(cls, creator: "User", name: str, description: str = "", image_url: str = "") -> "Chat":
         async with Client(nostr_url) as client:
@@ -46,7 +77,10 @@ class Chat:
                 pub_key=creator.nostr_key.public_key_hex())
             event.sign(creator.nostr_key.private_key_hex())
             client.publish(event)
-        return cls(creator=creator, name=name, description=description, id=event.id)
+
+        chat = cls(creator=creator, name=name, description=description, id=event.id)
+        await chat.save()
+        return chat
 
     async def new_message(self, user: "User", message: str) -> "RoflStatus":
         if self.uuid not in user.joined_chats:
@@ -54,7 +88,9 @@ class Chat:
         new_user_message = Message(user.uuid, message, self.uuid)
         self.messages.append(new_user_message)
         self.amount_of_messages += 1
-        # Async nostr opperation
+        self.last_msg_at = time.time()
+
+        # Async nostr operation
         async with Client(nostr_url) as client:
             # Create a nostr message
             event = Event(kind=Event.KIND_CHANNEL_MESSAGE,
@@ -63,16 +99,20 @@ class Chat:
                 pub_key=user.nostr_key.public_key_hex())
             event.sign(user.nostr_key.private_key_hex())
             client.publish(event)
+
+        await self.save()
         return RoflStatus.SUCCESS.create(f"Managed to send the new message from {user.uuid}", new_user_message)
 
-    def join_chat(self, user: "User") -> "RoflStatus":
+    async def join_chat(self, user: "User") -> "RoflStatus":
         self.members.append(user.uuid)
         self.amount_of_members += 1
+        await self.save()
         return RoflStatus.SUCCESS.create(f"User {user.uuid} joined the chat {self.uuid}")
 
-    def leave_chat(self, user: "User") -> "RoflStatus":
+    async def leave_chat(self, user: "User") -> "RoflStatus":
         self.members.remove(user.uuid)
         self.amount_of_members -= 1
+        await self.save()
         return RoflStatus.SUCCESS.create(f"User {user.uuid} left the chat {self.uuid}")
 
     def get_messages(self) -> "RoflStatus":
