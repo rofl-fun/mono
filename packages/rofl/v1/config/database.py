@@ -1,0 +1,27 @@
+from motor.motor_asyncio import AsyncIOMotorClient
+from typing import Optional
+import os
+from dotenv import load_dotenv
+
+load_dotenv()
+
+# MongoDB connection settings
+MONGODB_URL = os.environ.get("MONGODB_URL", "mongodb://localhost:27017")
+DATABASE_NAME = os.environ.get("DATABASE_NAME", "rofl_db")
+
+# Global client instance
+_client: Optional[AsyncIOMotorClient] = None
+
+async def get_database():
+    """Get the database instance. Creates connection if not exists."""
+    global _client
+    if _client is None:
+        _client = AsyncIOMotorClient(MONGODB_URL)
+    return _client[DATABASE_NAME]
+
+async def close_database():
+    """Close the database connection."""
+    global _client
+    if _client is not None:
+        _client.close()
+        _client = None
