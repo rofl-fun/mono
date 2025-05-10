@@ -5,5 +5,5 @@ services:
     platform: linux/amd64
     ports:
       - "8080:8080"
-    # environment:
-      # - TOKEN=${TOKEN}
+    volumes:
+      - /run/rofl-appd.sock:/run/rofl-appd.sock
