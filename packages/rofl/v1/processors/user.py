@@ -7,7 +7,7 @@ class User:
         self.display_name = display_name
         self.uuid = uid
         self.joined_chats = []
-        self.keys = Keys()
+        self.nostr_key = Keys()
 
     def join_chat(self, chat_id: str) -> RoflStatus:
         if chat_id in self.joined_chats:
