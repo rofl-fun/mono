@@ -17,5 +17,13 @@ services:
     volumes:
       - mongodb_data:/data/db
 
+  monstr:
+    build: .
+    image: "docker.io/0xjsi/monstr-rofl"
+    command: python monstr_relay.py
+    ports:
+      - "8082:8082"
+
+
 volumes:
   mongodb_data:
