@@ -3,7 +3,6 @@ import uuid
 import time
 import json
 import os
-#from v1.processors.user import User
 from utils.rofl_status import RoflStatus
 from monstr.client.client import Client
 from monstr.event.event import Event
