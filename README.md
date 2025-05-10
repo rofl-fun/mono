@@ -1,12 +1,18 @@
-# 🏗 ROFL.DAM
+# ROFL.DAM
 
 <h4 align="center">
+  <p align="center">
+    <img src="./packages/nextjs/public/logo.png" alt="Logo" width="300" height="auto">
+  </p>
   <a href="https://rofl-dam.vercel.app/">Deployed app</a>
 </h4>
 
+
+A secure messaging platform that combines Oasis ROFL's trusted execution environment with decentralized, authenticated messaging capabilities.
+
 ## 🎯 Problem
 
-ROFL.DAM solves key problems of traditional chat platforms by giving users full control, privacy, and resilience through decentralization. Unlike centralized tools prone to censorship, surveillance, and opaque moderation, ROFL.DAM uses Nostr for censorship-resistant real-time chat, MongoDB for secure group data storage, and a user-friendly frontend for group creation, joining, and management.
+ROFL.DAM (**R**untime **O**ff-chain **F**unction **L**ogic **D**ecentralized **A**uthenticated **M**essaging) solves key problems of traditional chat platforms by giving users full control, privacy, and resilience through decentralization. Unlike centralized tools prone to censorship, surveillance, and opaque moderation, ROFL.DAM uses Nostr for censorship-resistant real-time chat, MongoDB for secure group data storage, and a user-friendly frontend for group creation, joining, and management.
 
 ## 🚀 Solution
 
@@ -92,7 +98,7 @@ This project is built for the Oasis ROFL and Oasis Sapphire track, leveraging:
 
 ## 👥 Team
 
-- [0xjsi.eth](https://x.com/0xjsieth) - Senior Docker Engineer
+- [0xjsi.eth](https://x.com/0xjsieth) - Solidity Developer
 - [maarten](https://github.com/11029358) - Design and UX
-- [pitycake](https://twitter.com/pitycake) - Senior Backend Developer
+- [pitycake](https://twitter.com/pitycake) - Devops
 - [arjanjohan](https://twitter.com/arjanjohan) - Fullstack Developer
