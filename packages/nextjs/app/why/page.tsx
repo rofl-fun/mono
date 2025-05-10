@@ -53,8 +53,8 @@ const WhyPage = () => {
           </h1>
           <div className="w-full flex justify-center mb-12">
             <img
-              src="/pages/richy.png"
-              alt="Why Richy"
+              src="/pages/loog.png"
+              alt="Why Loog"
               width={500}
               height={256}
               className="w-full max-w-2xl rounded-lg shadow"
