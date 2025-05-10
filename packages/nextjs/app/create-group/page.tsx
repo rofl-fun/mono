@@ -22,7 +22,7 @@ const CreateGroupPage = () => {
     setError(null);
 
     try {
-      const response = await fetch('http://localhost:8080/v1/create/', {
+      const response = await fetch('/api/v1/create/', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
