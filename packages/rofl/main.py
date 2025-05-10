@@ -60,7 +60,7 @@ async def message(params: NewMessage):
     if not user:
         return {"error": "User not found"}
 
-    chat: "Chat" = await get_chat(params.chat_id, user)
+    chat: "Chat" = await get_chat(params.chat_id)
     if not chat:
         return {"error": "Chat not found"}
 

@@ -23,8 +23,8 @@ class Message:
         self.chat_id = chat_id
 
 class Chat:
-    def __init__(self, creator: "User", name: str, description: str, id: str):
-        self.creator = creator.uuid
+    def __init__(self, creator: str, name: str, description: str, id: str):
+        self.creator = creator
         self.name = name
         self.description = description
         self.messages = []
@@ -47,7 +47,7 @@ class Chat:
             event.sign(creator.nostr_key.private_key_hex())
             client.publish(event)
 
-        chat = cls(creator=creator, name=name, description=description, id=event.id)
+        chat = cls(creator=creator.uuid, name=name, description=description, id=event.id)
         await chat.save()
         return chat
 
@@ -123,7 +123,7 @@ class Chat:
         else:
             return self.message[self.amount_of_messages - 1]
 
-async def get_chat(id: str, user: "User") -> Optional["Chat"]:
+async def get_chat(id: str) -> Optional["Chat"]:
     """Retrieves a chat from the Nostr relay."""
     async with Client(nostr_url) as client:
         # Query for the channel create event
@@ -140,7 +140,7 @@ async def get_chat(id: str, user: "User") -> Optional["Chat"]:
 
         # Create a new Chat instance
         chat = Chat(
-            creator=user,
+            creator=event.pub_key,
             name=content["name"],
             description=content.get("about", ""),
             id=event.id
