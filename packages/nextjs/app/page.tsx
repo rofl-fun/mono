@@ -4,7 +4,13 @@ import { useState } from "react";
 import Link from "next/link";
 import groupsData from "./data/items.json"; // Assuming this path is correct relative to page.tsx
 import { formatDistanceToNow } from "date-fns";
-import groupsData from "./data/items.json";
+import { useAccount } from "wagmi"; // Only if you need connectedAddress for something specific here
+import { Address } from "~~/components/scaffold-eth"; // Only if displaying address
+
+import { useScaffoldReadContract, useScaffoldWriteContract } from "~~/hooks/scaffold-eth";
+import { parseEther } from "viem";
+
+
 
 interface GroupInfo {
   id: number;
@@ -17,13 +23,31 @@ interface GroupInfo {
   description: string;
   trend: string;
   lastActive: string;
-  chatId: string;
 }
 
-type CollectionInfo = [bigint, string, bigint]; // [collectionId, creator, price]
-
 const Home = () => {
-  const { address: connectedAddress } = useAccount();
+  const { address: connectedAddress } = useAccount(); // Restore if needed
+
+
+  const { data: hasAccess } = useScaffoldReadContract({
+    contractName: "ChatAccessNFT",
+    functionName: "hasAccess",
+    args: [connectedAddress, "bomdia"],
+  });
+
+  const { writeContractAsync: mintNFT } = useScaffoldWriteContract({
+    contractName: "ChatAccessNFT",
+  });
+
+  const { data: collectionInfo } = useScaffoldReadContract({
+    contractName: "ChatAccessNFT",
+    functionName: "getCollectionByChatId",
+    args: [""],
+  });
+
+
+
+  const [sortBy, setSortBy] = useState<"members" | "pnl" | "price">("members");
 
   const formatNumber = (num: number) => {
     return new Intl.NumberFormat("en-US", {
@@ -129,29 +153,33 @@ const Home = () => {
           </div>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {groupsData.groups.map((group: GroupInfo) => (
-            <div
-              key={group.id}
-              className="bg-base-200 rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-shadow"
-            >
-              <div className="p-6">
-                <div className="flex justify-between items-start mb-4">
-                  <div>
-                    <h2 className="text-xl font-bold">{group.name}</h2>
-                    <span className={`inline-block px-2 py-1 text-xs rounded-full ${
-                      group.type === 'alpha' ? 'bg-primary text-primary-content' : 'bg-secondary text-secondary-content'
-                    }`}>
-                      {group.type.toUpperCase()}
-                    </span>
-                  </div>
-                  <div className="text-right">
-                    <div className="text-lg font-bold">
-                      {formatNumber(group.joinPrice)} {group.currency}
+        {/* Groups Grid */}
+        {filteredAndSortedGroups.length > 0 ? (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {filteredAndSortedGroups.map((group: GroupInfo) => (
+              <div
+                key={group.id}
+                className="group bg-base-100 rounded-xl shadow-lg overflow-hidden hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-1 flex flex-col"
+              >
+                <div className="p-6 flex flex-col flex-grow">
+                  <div className="flex justify-between items-start mb-4">
+                    <div>
+                      <h2 className="text-2xl font-bold mb-1 group-hover:text-primary transition-colors">{group.name}</h2>
+                      <span
+                        className={`inline-block px-3 py-1 text-xs rounded-full font-semibold ${
+                          group.type === "alpha" ? "bg-primary/20 text-primary" : "bg-secondary/20 text-secondary"
+                        }`}
+                      >
+                        {group.type.toUpperCase()}
+                      </span>
                     </div>
-                    <div className="text-sm opacity-70">to join</div>
+                    <div className="text-right flex-shrink-0">
+                      <div className="text-xl font-bold text-primary">
+                        {formatNumber(group.joinPrice)} {group.currency}
+                      </div>
+                      <div className="text-xs opacity-70">to join</div>
+                    </div>
                   </div>
-                </div>
 
                   <p className="text-sm opacity-80 mb-4 line-clamp-3 flex-grow">{group.description}</p>
 
@@ -173,13 +201,20 @@ const Home = () => {
                     Last active: {formatDistanceToNow(new Date(group.lastActive), { addSuffix: true })}
                   </div>
 
-                <button className="w-full mt-4 btn btn-primary">
-                  Join Group
-                </button>
+                  <button className="w-full btn btn-primary mt-auto hover:scale-[1.02] transition-transform">
+                    View Group (dummy)
+                  </button>
+                </div>
               </div>
-            </div>
-          ))}
-        </div>
+            ))}
+          </div>
+        ) : (
+          <div className="text-center py-12">
+            <p className="text-xl opacity-70">
+              No groups found matching your criteria. Try adjusting your search or filters.
+            </p>
+          </div>
+        )}
       </div>
     </div>
   );
