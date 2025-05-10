@@ -11,8 +11,6 @@ from typing import TYPE_CHECKING
 if TYPE_CHECKING:
     from v1.processors.user import User
 
-load_dotenv()
-
 nostr_url = "http://localhost:8082"
 #os.environ.get("NOSTR_URL")
 
