@@ -49,6 +49,8 @@ class Chat:
         return cls(creator=creator, name=name, description=description, id=event.id)
 
     async def new_message(self, user: "User", message: str) -> "RoflStatus":
+        if self.uuid not in user.joined_chats:
+            return RoflStatus.ERROR.create(f"User {user.uuid} is not in this group {self.uuid}")
         new_user_message = Message(user.uuid, message, self.uuid)
         self.messages.append(new_user_message)
         self.amount_of_messages += 1

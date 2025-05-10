@@ -16,7 +16,6 @@ async def create_user(display_name: str, uuid: str) -> "User":
     user_db = UserDB(
         display_name=display_name,
         uuid=uuid,
-        nostr_public_key=nostr_keys.public_key_hex(),
         nostr_private_key=nostr_keys.private_key_hex(),
         joined_chats=[]
     )
@@ -44,9 +43,7 @@ def _user_db_to_user(user_db: UserDB) -> "User":
     user = User(user_db.display_name, user_db.uuid)
 
     # Set up the nostr keys
-    user.nostr_key = Keys()
-    user.nostr_key.private_key = user_db.nostr_private_key
-    user.nostr_key.public_key = user_db.nostr_public_key
+    user.nostr_key = Keys(user_db.nostr_private_key)
 
     # Set the joined chats
     user.joined_chats = user_db.joined_chats.copy()
