@@ -59,7 +59,7 @@ const HowPage = () => {
           </h1>
           <div className="prose prose-lg max-w-none">
             <p className="text-xl mb-6">
-              Getting started with ROFL.FUN is simple. Here's how you can join the community and start trading.
+              Getting started with ROFL.FUN is simple. Here is how you can join the community and start trading.
             </p>
             <div className="w-full flex justify-center mb-12">
               <Image

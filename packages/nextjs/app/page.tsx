@@ -3,8 +3,6 @@
 import { useState } from "react";
 import Link from "next/link";
 import groupsData from "./data/items.json";
-// Assuming this path is correct relative to page.tsx
-import { formatDistanceToNow } from "date-fns";
 
 // import { useAccount } from "wagmi"; // Only if you need connectedAddress for something specific here
 // import { Address } from "~~/components/scaffold-eth"; // Only if displaying address

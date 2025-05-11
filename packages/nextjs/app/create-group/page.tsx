@@ -74,7 +74,7 @@ const CreateGroupPage = () => {
       console.error('Error creating group:', err);
       setError('Failed to create group. Please try again.');
     } finally {
-      setIsLoading(false);
+      // setIsLoading(false);
     }
   };
 
