@@ -6,8 +6,8 @@ import { useAccount } from "wagmi";
 import { formatDistanceToNow } from "date-fns";
 import groupsData from "./data/items.json";
 
-// import { useAccount } from "wagmi"; // Only if you need connectedAddress for something specific here
-// import { Address } from "~~/components/scaffold-eth"; // Only if displaying address
+import { useAccount } from "wagmi"; // Herstel deze import
+// import { Address } from "~~/components/scaffold-eth"; // Alleen als je het adres hier wilt tonen
 
 interface Chat {
   chat_id: string;
@@ -33,7 +33,11 @@ interface PlaceholderChat {
 }
 
 const Home = () => {
+<<<<<<< HEAD
   const { address: connectedAddress } = useAccount();
+=======
+  const { isConnected } = useAccount(); // Haal isConnected status op
+>>>>>>> 104fba4 (wallet not connected checksum for create group and  view my chats pages)
   const [sortBy, setSortBy] = useState<"members" | "pnl" | "price">("members");
   const [chatIds, setChatIds] = useState<string[]>([]);
   const [loading, setLoading] = useState(true);
@@ -102,6 +106,7 @@ const Home = () => {
     }).format(num);
   };
 
+<<<<<<< HEAD
   // Get placeholder data for each chat ID
   const getPlaceholderData = (index: number): PlaceholderChat => {
     const placeholderData = groupsData.groups[index % groupsData.groups.length];
@@ -124,6 +129,16 @@ const Home = () => {
       lastActive: placeholder.lastActive,
     };
   }).sort((a, b) => {
+=======
+  const handleProtectedLinkClick = (event: React.MouseEvent<HTMLElement>) => {
+    if (!isConnected) {
+      event.preventDefault();
+      event.stopPropagation();
+    }
+  };
+
+  const filteredAndSortedGroups = groupsData.groups.sort((a: GroupInfo, b: GroupInfo) => {
+>>>>>>> 104fba4 (wallet not connected checksum for create group and  view my chats pages)
     switch (sortBy) {
       case "members":
         return b.members - a.members;
@@ -146,12 +161,46 @@ const Home = () => {
 
       {/* Create Group and My Chats Links */}
       <div className="flex flex-col sm:flex-row justify-center items-center gap-4 mb-10 px-4 w-full max-w-3xl mx-auto">
-        <Link href="/create-group" passHref className="w-full sm:w-auto">
-          <button className="btn btn-primary btn-lg w-full sm:w-auto">+ Create a New Group</button>
-        </Link>
-        <Link href="/my-chats" passHref className="w-full sm:w-auto">
-          <button className="btn btn-secondary btn-lg w-full sm:w-auto">View My Chats</button>
-        </Link>
+        <div
+          className={`tooltip tooltip-bottom w-full sm:w-auto ${!isConnected ? "tooltip-error" : ""}`}
+          data-tip={!isConnected ? "Please connect your wallet first!" : undefined}
+          onClick={handleProtectedLinkClick}
+        >
+          <Link
+            href={isConnected ? "/create-group" : "#"}
+            passHref
+            className={`w-full sm:w-auto ${!isConnected ? "cursor-not-allowed pointer-events-none" : ""}`}
+            aria-disabled={!isConnected}
+            tabIndex={!isConnected ? -1 : undefined}
+          >
+            <button
+              className={`btn btn-primary btn-lg w-full sm:w-auto ${!isConnected ? "btn-disabled" : ""}`}
+              disabled={!isConnected}
+            >
+              + Create a New Group
+            </button>
+          </Link>
+        </div>
+        <div
+          className={`tooltip tooltip-bottom w-full sm:w-auto ${!isConnected ? "tooltip-error" : ""}`}
+          data-tip={!isConnected ? "Please connect your wallet first!" : undefined}
+          onClick={handleProtectedLinkClick}
+        >
+          <Link
+            href={isConnected ? "/my-chats" : "#"}
+            passHref
+            className={`w-full sm:w-auto ${!isConnected ? "cursor-not-allowed pointer-events-none" : ""}`}
+            aria-disabled={!isConnected}
+            tabIndex={!isConnected ? -1 : undefined}
+          >
+            <button
+              className={`btn btn-secondary btn-lg w-full sm:w-auto ${!isConnected ? "btn-disabled" : ""}`}
+              disabled={!isConnected}
+            >
+              View My Chats
+            </button>
+          </Link>
+        </div>
       </div>
 
       {error && (
