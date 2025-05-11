@@ -17,14 +17,13 @@ artifacts:
     compose: compose.yaml
 deployments:
   default:
-    app_id: rofl1qr64czf29697aeyjecwjaqzc9nla7y0yuyn4xcdq
+    app_id: rofl1qr0qvcvh33pvfz2nn2uuejm0mjvvpwln3skkdl5z
     network: testnet
     paratime: sapphire
     admin: bomdia
-    oci_repository: rofl.sh/edcbf9d4-7cd2-4378-95a1-b74779d9cc15:1746947505
     trust_root:
-      height: 26544103
-      hash: d2a5397879099844a71a7d2faa8fe98c5006d17d5ef8b628576cac337dd9c4af
+      height: 26544333
+      hash: 1c23fa168260cc1aef383738921b45701ab55b095f0c8f6e92aaec525322dccf
     policy:
       quotes:
         pcs:
@@ -32,14 +31,9 @@ deployments:
           min_tcb_evaluation_data_number: 18
           tdx: {}
       enclaves:
-        - id: Z5WrxRhJOkenVUYWdA1QJZvK9RxRo9Qnf+cJ01Bskt0AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==
-        - id: 6gMC1OuJ8kJa2aZJtiW5WqXerShpo8qaR4W4xqlG448AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==
+        - 4Iu1ms1C9GiE/LO97gMxlugcZcjL8veaoKGjv3+R7j4AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==
+        - r2YLkqyXCp88txDqKSDZ/LCC+fhjb3QL4gnv7oFf/FQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==
       endorsements:
         - any: {}
       fees: endorsing_node
       max_expiration: 3
-    machines:
-      default:
-        provider: oasis1qp2ens0hsp7gh23wajxa4hpetkdek3swyyulyrmz
-        offer: playground_short
-        id: "0000000000000080"
