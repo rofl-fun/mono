@@ -3,6 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { useAccount } from 'wagmi';
+import { useScaffoldWriteContract } from "~~/hooks/scaffold-eth";
 
 const CreateGroupPage = () => {
   const [title, setTitle] = useState("");
@@ -11,6 +12,10 @@ const CreateGroupPage = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const { address } = useAccount();
+
+  const { writeContractAsync: createChatCollection } = useScaffoldWriteContract({
+    contractName: "ChatAccessNFT",
+  });
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -43,12 +48,28 @@ const CreateGroupPage = () => {
       const result = await response.json();
       console.log('Group created:', result);
 
+      // Create NFT collection for the chat
+      try {
+        const priceInWei = BigInt(parseFloat(price) * 1e18); // Convert ROSE to wei
+        const tx = await createChatCollection({
+          functionName: "createChatCollection",
+          args: [priceInWei, result.uuid],
+        });
+
+        console.log('NFT collection created:', tx);
+      } catch (nftError) {
+        console.error('Error creating NFT collection:', nftError);
+        setError('Group created but failed to create NFT collection. Please try again.');
+        return;
+      }
+
       // Clear form
       setTitle('');
       setDescription('');
+      setPrice('');
 
       // Redirect to groups page or show success message
-      window.location.href = '/groups';
+      window.location.href = '/';
     } catch (err) {
       console.error('Error creating group:', err);
       setError('Failed to create group. Please try again.');
