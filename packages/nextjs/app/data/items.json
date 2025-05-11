@@ -6,11 +6,11 @@
       "type": "alpha",
       "members": 42,
       "avgPnl": 156.78,
-      "joinPrice": 0.5,
-      "currency": "ROFL",
+      "joinPrice": 5,
+      "currency": "ROSE",
       "description": "Exclusive group for experienced traders",
       "trend": "up",
-      "lastActive": "2024-03-20T15:30:00Z"
+      "lastActive": "2024-09-10T15:30:00Z"
     },
     {
       "id": 2,
@@ -18,11 +18,11 @@
       "type": "cabal",
       "members": 128,
       "avgPnl": 89.45,
-      "joinPrice": 0.2,
-      "currency": "ROFL",
+      "joinPrice": 35,
+      "currency": "ROSE",
       "description": "Community-driven trading insights",
       "trend": "up",
-      "lastActive": "2024-03-20T14:45:00Z"
+      "lastActive": "2025-05-02T14:45:00Z"
     },
     {
       "id": 3,
@@ -30,11 +30,11 @@
       "type": "alpha",
       "members": 35,
       "avgPnl": 234.12,
-      "joinPrice": 1.0,
-      "currency": "ROFL",
+      "joinPrice": 120,
+      "currency": "ROSE",
       "description": "Advanced DeFi strategies and analysis",
       "trend": "down",
-      "lastActive": "2024-03-20T15:15:00Z"
+      "lastActive": "2025-04-20T15:15:00Z"
     },
     {
       "id": 4,
@@ -42,11 +42,11 @@
       "type": "cabal",
       "members": 95,
       "avgPnl": 67.89,
-      "joinPrice": 0.3,
-      "currency": "ROFL",
+      "joinPrice": 8.5,
+      "currency": "ROSE",
       "description": "NFT trading and market analysis",
       "trend": "up",
-      "lastActive": "2024-03-20T15:00:00Z"
+      "lastActive": "2025-03-20T15:00:00Z"
     }
   ]
 }
