@@ -162,3 +162,17 @@ async def get_chat(channel_id: str):
         chat.amount_of_members = len(chat.members)
 
         return chat
+
+async def get_all_chats():
+    """Returns a list of all chat IDs that have been created."""
+    async with Client(nostr_url) as client:
+        await client.wait_connect()
+
+        # Query for all channel creation events (kind 40)
+        channel_events = await client.query([{
+            "kinds": [Event.KIND_CHANNEL_CREATE]
+        }])
+
+        # Extract the event IDs (which are the channel IDs)
+        chat_ids = [evt.id for evt in channel_events]
+        return chat_ids

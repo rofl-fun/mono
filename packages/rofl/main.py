@@ -2,7 +2,7 @@ from pydantic import BaseModel
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from v1.processors.user import get_user, User
-from v1.processors.chat import get_chat, Chat
+from v1.processors.chat import get_chat, Chat, get_all_chats
 
 class NewUser(BaseModel):
     uuid: str
@@ -83,4 +83,10 @@ async def get_chat_feed_of(user: str):
 async def get_history_of(chat: str):
     chat_inst: "Chat" = await get_chat(chat)
     return chat_inst
+
+@app.get("/v1/chats")
+async def get_chats():
+    """Returns a list of all chat IDs that have been created."""
+    chat_ids = await get_all_chats()
+    return {"chats": chat_ids}
 
