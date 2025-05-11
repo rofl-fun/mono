@@ -61,6 +61,15 @@ const HowPage = () => {
             <p className="text-xl mb-6">
               Getting started with ROFL.FUN is simple. Here's how you can join the community and start trading.
             </p>
+            <div className="w-full flex justify-center mb-12">
+              <Image
+                src="/pages/flowchartuser.png"
+                alt="User Flowchart"
+                width={1500}
+                height={900}
+                className="rounded-lg shadow-lg"
+              />
+            </div>
             <div className="space-y-8 mt-12">
               {steps.map((step, idx) => {
                 const Icon = step.icon;
@@ -85,7 +94,7 @@ const HowPage = () => {
                       <div className="w-full flex justify-center mt-6">
                         <Image
                           src="/pages/browsechats.png"
-                          alt="Smart Investing Web3 Example"
+                          alt="Browse chat example"
                           width={500}
                           height={256}
                           className="w-full max-w-2xl rounded-lg shadow"

@@ -24,16 +24,16 @@ const Navbar = () => {
   ];
 
   return (
-    <nav className="bg-base-200 border-b border-base-300 sticky top-0 z-50 backdrop-blur-sm bg-opacity-90">
+    <nav className="bg-base-100 border-b border-base-300 sticky top-0 z-50 backdrop-blur-sm bg-opacity-90">
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
           <div className="flex items-center">
             <Link href="/">
               <img
-                src="/logo.png"
+                src="/pages/loog.png"
                 alt="ROFL.FUN Logo"
-                className="h-10 w-auto mr-2"
+                className="h-12 w-auto mr-2"
                 style={{ display: "inline-block", verticalAlign: "middle" }}
               />
             </Link>
