@@ -6,13 +6,12 @@ from utils.rofl_status import RoflStatus
 from monstr.client.client import Client
 from monstr.event.event import Event
 from typing import TYPE_CHECKING, Optional
-from v1.config.database import get_database
-from v1.models.chat_db import ChatDB
+import asyncio
 
 if TYPE_CHECKING:
     from v1.processors.user import User
 
-nostr_url = "http://monstr:8082"
+nostr_url = "ws://monstr:8082"
 
 class Message:
     def __init__(self, sender: str, message: str, chat_id: str):
@@ -23,7 +22,7 @@ class Message:
         self.chat_id = chat_id
 
 class Chat:
-    def __init__(self, creator: str, name: str, description: str, id: str):
+    def __init__(self, creator: str, name: str, description: str, channel_id: str):
         self.creator = creator
         self.name = name
         self.description = description
@@ -32,51 +31,39 @@ class Chat:
         self.amount_of_members = 0
         self.amount_of_messages = 0
         self.members = []
-        self.uuid = id
+        self.uuid = channel_id
+        
+    async def save(self):
+        """This method is kept for compatibility with existing code.
+        All data is already stored in Nostr, so no additional saving is needed."""
+        # No database operations needed - all data is stored in Nostr
+        pass
 
     @classmethod
     async def create(cls, creator: "User", name: str, description: str = "", image_url: str = "") -> "Chat":
         async with Client(nostr_url) as client:
-            event = Event(kind=Event.KIND_CHANNEL_CREATE,
+            await client.wait_connect()
+
+            channel_evt = Event(
+                kind=Event.KIND_CHANNEL_CREATE,   # 40
                 content=json.dumps({
                     "name": name,
                     "about": description,
-                    "picture": image_url,
+                    "picture": image_url
                 }),
-                pub_key=creator.nostr_key.public_key_hex())
-            event.sign(creator.nostr_key.private_key_hex())
-            client.publish(event)
+                pub_key=creator.nostr_key.public_key_hex()
+            )
+            channel_evt.sign(creator.nostr_key.private_key_hex())
+            client.publish(channel_evt)
 
-        chat = cls(creator=creator.uuid, name=name, description=description, id=event.id)
-        await chat.save()
+        # the real channel ID is the *event hash*
+        chat = cls(
+            creator=creator.uuid,
+            name=name,
+            description=description,
+            channel_id=channel_evt.id     # <-- store it here
+        )
         return chat
-
-    async def save(self) -> None:
-        """Saves the current state of the Chat instance to MongoDB."""
-        chat_db = ChatDB(
-            uuid=self.uuid,
-            creator=self.creator,
-            name=self.name,
-            description=self.description,
-            messages=[{
-                "sender": msg.sender,
-                "message": msg.message,
-                "uuid": msg.uuid,
-                "sent_at": msg.sent_at,
-                "chat_id": msg.chat_id
-            } for msg in self.messages],
-            last_msg_at=self.last_msg_at,
-            amount_of_members=self.amount_of_members,
-            amount_of_messages=self.amount_of_messages,
-            members=self.members.copy()
-        )
-
-        db = await get_database()
-        await db.chats.update_one(
-            {"uuid": self.uuid},
-            {"$set": chat_db.dict()},
-            upsert=True
-        )
 
     async def new_message(self, user: "User", message: str) -> "RoflStatus":
         if self.uuid not in user.joined_chats:
@@ -85,30 +72,26 @@ class Chat:
         self.messages.append(new_user_message)
         self.amount_of_messages += 1
         self.last_msg_at = time.time()
-
-        # Async nostr operation
         async with Client(nostr_url) as client:
-            # Create a nostr message
-            event = Event(kind=Event.KIND_CHANNEL_MESSAGE,
+            await client.wait_connect()
+            msg_evt = Event(
+                kind=Event.KIND_CHANNEL_MESSAGE,   # 42
                 content=message,
-                tags=[["e", self.uuid, "", "root"]],
-                pub_key=user.nostr_key.public_key_hex())
-            event.sign(user.nostr_key.private_key_hex())
-            client.publish(event)
-
-        await self.save()
+                pub_key=user.nostr_key.public_key_hex(),
+                tags=[["e", self.uuid, "", "root"]]   # self.uuid is now the hash
+            )
+            msg_evt.sign(user.nostr_key.private_key_hex())
+            client.publish(msg_evt)
         return RoflStatus.SUCCESS.create(f"Managed to send the new message from {user.uuid}", new_user_message)
 
     async def join_chat(self, user: "User") -> "RoflStatus":
         self.members.append(user.uuid)
         self.amount_of_members += 1
-        await self.save()
         return RoflStatus.SUCCESS.create(f"User {user.uuid} joined the chat {self.uuid}")
 
     async def leave_chat(self, user: "User") -> "RoflStatus":
         self.members.remove(user.uuid)
         self.amount_of_members -= 1
-        await self.save()
         return RoflStatus.SUCCESS.create(f"User {user.uuid} left the chat {self.uuid}")
 
     def get_messages(self) -> "RoflStatus":
@@ -121,48 +104,39 @@ class Chat:
         if self.amount_of_messages == 0:
             return None
         else:
-            return self.message[self.amount_of_messages - 1]
+            return self.messages[self.amount_of_messages - 1]
 
-async def get_chat(id: str) -> Optional["Chat"]:
-    """Retrieves a chat from the Nostr relay."""
+async def get_chat(channel_id: str):
     async with Client(nostr_url) as client:
-        # Query for the channel create event
-        events = await client.query({
+        await client.wait_connect()
+
+        # 1. fetch the channel-create event
+        chan = await client.query([{
             "kinds": [Event.KIND_CHANNEL_CREATE],
-            "ids": [id]
-        })
+            "ids":   [channel_id]
+        }])
 
-        if not events:
+        print(f"Chan: {chan}")
+
+        if not chan:
             return None
+        chan_evt = chan[0]
+        meta = json.loads(chan_evt.content)
 
-        event = events[0]
-        content = json.loads(event.content)
+        print(f"Event {chan_evt}")
 
-        # Create a new Chat instance
         chat = Chat(
-            creator=event.pub_key,
-            name=content["name"],
-            description=content.get("about", ""),
-            id=event.id
+            creator=chan_evt.pub_key,
+            name=meta.get("name", ""),
+            description=meta.get("about", ""),
+            channel_id=channel_id
         )
 
-        # Get channel messages
-        messages = await client.query({
-            "kinds": [Event.KIND_CHANNEL_MESSAGE],
-            "#e": [id]
-        })
-
-        # Convert messages to Message objects
-        chat.messages = [
-            Message(
-                sender=msg.pub_key,
-                message=msg.content,
-                chat_id=id
-            ) for msg in messages
-        ]
-
-        chat.amount_of_messages = len(chat.messages)
-        if chat.messages:
-            chat.last_msg_at = chat.messages[-1].sent_at
-
+        # # 2. fetch messages
+        # notes = await client.query([{
+            # "kinds": [Event.KIND_CHANNEL_MESSAGE],
+            # "#e":   [channel_id]
+        # }])
+        # chat.messages = [Message(m.pub_key, m.content, channel_id) for m in notes]
+        # chat.amount_of_messages = len(chat.messages)
         return chat
