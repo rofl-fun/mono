@@ -90,7 +90,11 @@ class Chat:
         return RoflStatus.SUCCESS.create(f"User {user.uuid} joined the chat {self.uuid}")
 
     async def leave_chat(self, user: "User") -> "RoflStatus":
-        self.members.remove(user.uuid)
+        # Use the user's Nostr pubkey instead of UUID for member list
+        user_pubkey = user.nostr_key.public_key_hex()
+        if user_pubkey not in self.members:
+            return RoflStatus.ERROR.create(f"User {user.uuid} is not in chat {self.uuid}")
+        self.members.remove(user_pubkey)
         self.amount_of_members -= 1
         return RoflStatus.SUCCESS.create(f"User {user.uuid} left the chat {self.uuid}")
 
@@ -145,15 +149,16 @@ async def get_chat(channel_id: str):
             "kinds": [Event.KIND_CHANNEL_META],
             "#e": [channel_id]
         }])
-        
+
         # Add all unique pubkeys from messages and metadata as members
         members = set()
         for msg in notes:
             members.add(msg.pub_key)
         for meta in metadata:
             members.add(meta.pub_key)
-        
+
+        # For now, we'll just use the pubkeys as member IDs since we don't have a UUID mapping
         chat.members = list(members)
         chat.amount_of_members = len(chat.members)
-        
+
         return chat
