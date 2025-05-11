@@ -33,11 +33,11 @@ class Chat:
         self.members = []
         self.uuid = channel_id
         
-    async def save(self):
-        """This method is kept for compatibility with existing code.
-        All data is already stored in Nostr, so no additional saving is needed."""
-        # No database operations needed - all data is stored in Nostr
-        pass
+    #async def save(self):
+        #"""This method is kept for compatibility with existing code.
+        #All data is already stored in Nostr, so no additional saving is needed."""
+        ## No database operations needed - all data is stored in Nostr
+        #pass
 
     @classmethod
     async def create(cls, creator: "User", name: str, description: str = "", image_url: str = "") -> "Chat":
@@ -132,11 +132,28 @@ async def get_chat(channel_id: str):
             channel_id=channel_id
         )
 
-        # # 2. fetch messages
-        # notes = await client.query([{
-            # "kinds": [Event.KIND_CHANNEL_MESSAGE],
-            # "#e":   [channel_id]
-        # }])
-        # chat.messages = [Message(m.pub_key, m.content, channel_id) for m in notes]
-        # chat.amount_of_messages = len(chat.messages)
+        # 2. fetch messages
+        notes = await client.query([{
+            "kinds": [Event.KIND_CHANNEL_MESSAGE],
+            "#e":   [channel_id]
+        }])
+        chat.messages = [Message(m.pub_key, m.content, channel_id) for m in notes]
+        chat.amount_of_messages = len(chat.messages)
+
+        # 3. fetch channel metadata to get members
+        metadata = await client.query([{
+            "kinds": [Event.KIND_CHANNEL_META],
+            "#e": [channel_id]
+        }])
+        
+        # Add all unique pubkeys from messages and metadata as members
+        members = set()
+        for msg in notes:
+            members.add(msg.pub_key)
+        for meta in metadata:
+            members.add(meta.pub_key)
+        
+        chat.members = list(members)
+        chat.amount_of_members = len(chat.members)
+        
         return chat

@@ -27,7 +27,7 @@ class User:
 
     async def join_chat(self, chat_id: str) -> "RoflStatus":
         if chat_id in self.joined_chats:
-            return RoflStatus.ERROR.create(f"User {self.uuid} is already in chat {chat_id}")
+            return RoflStatus.ERROR.create(f"User {self.uuid} is already in chat {chat_id}", self.joined_chats)
         chat = await get_chat(chat_id)
         if not chat:
             return RoflStatus.ERROR.create(f"Chat {chat_id} not found")
@@ -38,7 +38,7 @@ class User:
 
     async def leave_chat(self, chat_id: str) -> "RoflStatus":
         if chat_id not in self.joined_chats:
-            return RoflStatus.ERROR.create(f"User {self.uuid} isn't in chat {chat_id}")
+            return RoflStatus.ERROR.create(f"User {self.uuid} isn't in chat {chat_id}", self.joined_chats)
         chat = await get_chat(chat_id)
         if not chat:
             return RoflStatus.ERROR.create(f"Chat {chat_id} not found")

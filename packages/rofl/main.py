@@ -75,7 +75,7 @@ async def create_chat(params: NewChat):
 
 @app.get("/v1/chatfeedOf/{user}")
 async def get_chat_feed_of(user: str):
-    user_inst: "User" = get_user(user)
+    user_inst: "User" = await get_user(user)
     res = await user_inst.get_chat_feed()
     return res
 
