@@ -3,7 +3,7 @@ import { NextResponse } from 'next/server';
 export async function POST(request: Request) {
   try {
     const body = await request.json();
-    const { user_id, name, description, image_url } = body;
+    const { user_id, name, description } = body;
 
     // TODO: Add your actual group creation logic here
     // For now, we'll return a mock response

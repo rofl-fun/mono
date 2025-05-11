@@ -9,7 +9,7 @@ const CreateGroupPage = () => {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [price, setPrice] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
+  // const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const { address } = useAccount();
 
@@ -24,7 +24,7 @@ const CreateGroupPage = () => {
       return;
     }
 
-    setIsLoading(true);
+    // setIsLoading(true);
     setError(null);
 
     try {

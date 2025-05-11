@@ -168,10 +168,10 @@ const MyChatsPage = () => {
                   )}
                 </div>
                 <div className="flex-grow overflow-y-auto mb-4">
-                  <p className="italic opacity-70">This is where messages for "{selectedChat.name}" would appear.</p>
+                  <p className="italic opacity-70">This is where messages for {selectedChat.name} would appear.</p>
                   {selectedChat.isPlaceholder && (
                     <p className="mt-4 text-sm">
-                      Since this is a placeholder, there aren\'t any real messages. But imagine a lively conversation
+                      Since this is a placeholder, there are no real messages. But imagine a lively conversation
                       here!
                     </p>
                   )}
