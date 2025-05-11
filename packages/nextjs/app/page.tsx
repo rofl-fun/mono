@@ -1,12 +1,11 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import Link from "next/link";
 import { useAccount } from "wagmi";
 import { formatDistanceToNow } from "date-fns";
 import groupsData from "./data/items.json";
 
-import { useAccount } from "wagmi"; // Herstel deze import
 // import { Address } from "~~/components/scaffold-eth"; // Alleen als je het adres hier wilt tonen
 
 interface Chat {
@@ -33,31 +32,34 @@ interface PlaceholderChat {
 }
 
 const Home = () => {
-<<<<<<< HEAD
-  const { address: connectedAddress } = useAccount();
-=======
-  const { isConnected } = useAccount(); // Haal isConnected status op
->>>>>>> 104fba4 (wallet not connected checksum for create group and  view my chats pages)
+  const { isConnected, address } = useAccount(); // address hier ophalen
   const [sortBy, setSortBy] = useState<"members" | "pnl" | "price">("members");
   const [chatIds, setChatIds] = useState<string[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
+  // Gebruik de data uit items.json als basis voor de placeholder items
+  const [placeholderItems, setPlaceholderItems] = useState<PlaceholderChat[]>(groupsData.groups);
+
   useEffect(() => {
     const fetchChatIds = async () => {
+      setLoading(true); // Zet loading true aan het begin van de fetch
       try {
-        const response = await fetch('/api/v1/chats');
-        if (!response.ok) throw new Error('Failed to fetch chats');
+        const response = await fetch('/api/v1/chats'); // Zorg dat dit endpoint bestaat en de juiste data teruggeeft
+        // if (!response.ok) throw new Error('Failed to fetch chat IDs');
 
         const data = await response.json();
-        if (data.status === "success") {
-          setChatIds(data.data || []);
+        // Aanname: data.chats is een array van chat IDs of volledige chat objecten
+        // Voor nu zetten we chatIds, maar dit wordt niet direct gebruikt om placeholderItems te vullen
+        if (data.chats) { // Aangepast naar data.chats gebaseerd op main.py endpoint
+          setChatIds(data.chats || []);
         } else {
-          setError(data.message || 'Failed to fetch chats');
+          // Fallback als de structuur anders is, of als je de placeholderItems direct wilt zetten
+          // setError(data.message || 'Failed to process chat data');
         }
       } catch (err) {
-        setError('Failed to fetch chats');
-        console.error('Error fetching chats:', err);
+        setError(err instanceof Error ? err.message : 'Failed to fetch chat IDs');
+        console.error('Error fetching chat IDs:', err);
       } finally {
         setLoading(false);
       }
@@ -67,7 +69,7 @@ const Home = () => {
   }, []);
 
   const handleJoinChat = async (chatId: string) => {
-    if (!connectedAddress) {
+    if (!address) { // Gebruik address
       setError('Please connect your wallet first');
       return;
     }
@@ -80,21 +82,23 @@ const Home = () => {
         },
         body: JSON.stringify({
           chat_id: chatId,
-          user_id: connectedAddress,
+          user_id: address, // Gebruik address
         }),
       });
 
-      if (!response.ok) throw new Error('Failed to join chat');
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}));
+        throw new Error(errorData.detail || 'Failed to join chat');
+      }
 
       const data = await response.json();
-      if (data.status === "success") {
-        // Show success message or redirect
+      if (data.status === "success" || response.ok) { // Controleer ook op response.ok
         window.location.href = '/my-chats';
       } else {
-        setError(data.message || 'Failed to join chat');
+        setError(data.message || data.detail || 'Failed to join chat');
       }
     } catch (err) {
-      setError('Failed to join chat');
+      setError(err instanceof Error ? err.message : 'Failed to join chat');
       console.error('Error joining chat:', err);
     }
   };
@@ -106,30 +110,6 @@ const Home = () => {
     }).format(num);
   };
 
-<<<<<<< HEAD
-  // Get placeholder data for each chat ID
-  const getPlaceholderData = (index: number): PlaceholderChat => {
-    const placeholderData = groupsData.groups[index % groupsData.groups.length];
-    return {
-      ...placeholderData,
-      id: index, // Use the index as ID to ensure uniqueness
-    };
-  };
-
-  const filteredAndSortedChats = chatIds.map((chatId, index) => {
-    const placeholder = getPlaceholderData(index);
-    return {
-      chat_id: chatId,
-      name: placeholder.name,
-      description: placeholder.description,
-      members: placeholder.members,
-      avgPnl: placeholder.avgPnl,
-      joinPrice: placeholder.joinPrice,
-      currency: placeholder.currency,
-      lastActive: placeholder.lastActive,
-    };
-  }).sort((a, b) => {
-=======
   const handleProtectedLinkClick = (event: React.MouseEvent<HTMLElement>) => {
     if (!isConnected) {
       event.preventDefault();
@@ -137,19 +117,21 @@ const Home = () => {
     }
   };
 
-  const filteredAndSortedGroups = groupsData.groups.sort((a: GroupInfo, b: GroupInfo) => {
->>>>>>> 104fba4 (wallet not connected checksum for create group and  view my chats pages)
-    switch (sortBy) {
-      case "members":
-        return b.members - a.members;
-      case "pnl":
-        return b.avgPnl - a.avgPnl;
-      case "price":
-        return a.joinPrice - b.joinPrice;
-      default:
-        return 0;
-    }
-  });
+  // Hernoemd van filteredAndSortedGroups en gebruikt placeholderItems state
+  const filteredAndSortedChats = useMemo(() => {
+    return [...placeholderItems].sort((a: PlaceholderChat, b: PlaceholderChat) => {
+      switch (sortBy) {
+        case "members":
+          return b.members - a.members;
+        case "pnl":
+          return b.avgPnl - a.avgPnl;
+        case "price":
+          return a.joinPrice - b.joinPrice;
+        default:
+          return 0;
+      }
+    });
+  }, [placeholderItems, sortBy]);
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-base-100 to-base-200 p-4">
@@ -241,9 +223,9 @@ const Home = () => {
           </div>
         ) : filteredAndSortedChats.length > 0 ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {filteredAndSortedChats.map((chat, idx) => (
+            {filteredAndSortedChats.map((item: PlaceholderChat, idx: number) => (
               <div
-                key={chat.chat_id}
+                key={item.id.toString()}
                 className="group bg-base-100 rounded-xl shadow-lg overflow-hidden hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-1 hover:border-2 hover:border-white flex flex-col"
               >
                 <img
@@ -268,35 +250,35 @@ const Home = () => {
                   className="w-full h-auto rounded-lg shadow object-contain mb-2"
                 />
                 <div className="p-6 flex flex-col flex-grow">
-                  <h2 className="text-2xl font-bold mb-0 transition-colors">{chat.name}</h2>
+                  <h2 className="text-2xl font-bold mb-0 transition-colors">{item.name}</h2>
                   <div className="flex items-end gap-2 mb-2 mt-2">
                     <span className="text-xl font-bold" style={{ color: "#CA8C37" }}>
-                      {formatNumber(chat.joinPrice)} {chat.currency}
+                      {formatNumber(item.joinPrice)} {item.currency}
                     </span>
                     <span className="text-sm text-white opacity-70 transform -translate-y-0.5">cost</span>
                   </div>
-                  <p className="text-base opacity-80 mt-1 mb-4 line-clamp-2">{chat.description}</p>
+                  <p className="text-base opacity-80 mt-1 mb-4 line-clamp-2">{item.description}</p>
 
                   <div className="grid grid-cols-2 gap-4 mb-4">
                     <div className="bg-base-200 rounded-lg p-3 text-center">
                       <div className="text-xs opacity-70 mb-1">Members</div>
-                      <div className="font-bold text-md">{chat.members}</div>
+                      <div className="font-bold text-md">{item.members}</div>
                     </div>
                     <div className="bg-base-200 rounded-lg p-3 text-center">
                       <div className="text-xs opacity-70 mb-1">Avg P&L</div>
-                      <div className={`font-bold text-md ${chat.avgPnl >= 0 ? "text-green-500" : "text-red-500"}`}>
-                        {chat.avgPnl >= 0 ? "+" : ""}
-                        {formatNumber(chat.avgPnl)}%
+                      <div className={`font-bold text-md ${item.avgPnl >= 0 ? "text-green-500" : "text-red-500"}`}>
+                        {item.avgPnl >= 0 ? "+" : ""}
+                        {formatNumber(item.avgPnl)}%
                       </div>
                     </div>
                   </div>
 
                   <div className="text-sm opacity-70 mb-6">
-                    Last active: {chat.lastActive}
+                    Last active: {item.lastActive}
                   </div>
 
                   <button
-                    onClick={() => handleJoinChat(chat.chat_id)}
+                    onClick={() => handleJoinChat(item.id.toString())}
                     className="w-full btn btn-lg font-bold mt-4 transition-transform"
                     style={{ backgroundColor: "#C30000", color: "white", border: "none" }}
                     onMouseOver={e => (e.currentTarget.style.backgroundColor = "#a80000")}

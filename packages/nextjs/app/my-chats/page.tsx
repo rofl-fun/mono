@@ -1,24 +1,67 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import { formatDistanceToNow } from "date-fns";
 
 // Nodig voor lastActive
 
+interface Message {
+  id: string;
+  text: string;
+  sender: "user" | "other";
+  timestamp: Date;
+}
+
 interface Chat {
   id: string;
   name: string;
-  isPlaceholder?: boolean;
   description?: string;
   type?: string;
-  members?: number; // NIEUW
-  avgPnl?: number; // NIEUW
-  lastActive?: string; // NIEUW (datum als string, bijv. ISO)
+  members?: number;
+  avgPnl?: number;
+  lastActive?: string;
 }
 
 const MyChatsPage = () => {
   const [selectedChat, setSelectedChat] = useState<Chat | null>(null);
+  const [newMessage, setNewMessage] = useState("");
+  const [messages, setMessages] = useState<Message[]>([]);
+
+  useEffect(() => {
+    if (selectedChat) {
+      setMessages([
+        {
+          id: crypto.randomUUID(),
+          text: `Welcome to ${selectedChat.name}! This is the beginning of your conversation.`,
+          sender: "other",
+          timestamp: new Date(Date.now() - 100000),
+        },
+        {
+          id: crypto.randomUUID(),
+          text: "Hey there! Glad to be here.",
+          sender: "user",
+          timestamp: new Date(Date.now() - 50000),
+        },
+      ]);
+      setNewMessage("");
+    } else {
+      setMessages([]);
+    }
+  }, [selectedChat]);
+
+  const handleSendMessage = () => {
+    if (newMessage.trim() === "" || !selectedChat) return;
+
+    const messageToSend: Message = {
+      id: crypto.randomUUID(),
+      text: newMessage.trim(),
+      sender: "user",
+      timestamp: new Date(),
+    };
+    setMessages(prevMessages => [...prevMessages, messageToSend]);
+    setNewMessage("");
+  };
 
   const formatNumber = (num: number | undefined) => {
     // Aangepast voor undefined
@@ -30,30 +73,45 @@ const MyChatsPage = () => {
   };
 
   let chats: Chat[] = [
-    // Voeg hier eventueel echte chats toe met de nieuwe velden
+    {
+      id: "lonely-bum-chat",
+      name: "Web3 pumping fun.",
+      description: "Chat focused on Web3 entrepreneurs.",
+      type: "group",
+      members: 10,
+      avgPnl: 12.5,
+      lastActive: new Date().toISOString(),
+    },
+    {
+      id: "another-chat",
+      name: "Women Finance",
+      description: "Chat focused on finance for women.",
+      type: "group",
+      members: 123,
+      avgPnl: 25.5,
+      lastActive: new Date(Date.now() - 86400000 * 2).toISOString(), // 2 dagen geleden
+    },
   ];
 
   if (chats.length === 0) {
     chats = [
       {
-        id: "lonely-bum-chat",
-        name: "Only for entrepreneurs in Web3.",
-        description: "This is a placeholder chat. It doesn\'t have real members or P&L.",
-        type: "placeholder",
-        isPlaceholder: true,
-        members: 0, // Placeholder
-        avgPnl: 0, // Placeholder
-        lastActive: new Date().toISOString(), // Placeholder (nu)
-      },
-      // Voorbeeld van een tweede kaart voor testdoeleinden van de layout
-      {
-        id: "another-chat",
-        name: "Women Finance",
-        description: "Chat focused on finance for women.",
+        id: "default-chat-1",
+        name: "Default Group A",
+        description: "A default group description.",
         type: "group",
-        members: 123,
-        avgPnl: 25.5,
-        lastActive: new Date(Date.now() - 86400000 * 2).toISOString(), // 2 dagen geleden
+        members: 50,
+        avgPnl: 5.0,
+        lastActive: new Date().toISOString(),
+      },
+      {
+        id: "default-chat-2",
+        name: "Default Group B",
+        description: "Another default group.",
+        type: "private", // Voorbeeld van ander type
+        members: 5,
+        avgPnl: -2.3,
+        lastActive: new Date(Date.now() - 86400000 * 1).toISOString(), // 1 dag geleden
       },
     ];
   }
@@ -85,11 +143,11 @@ const MyChatsPage = () => {
         <div className="flex flex-col md:flex-row gap-6">
           {/* Left Panel: Chat List */}
           <div className="md:w-1/3 lg:w-1/4 space-y-4 h-[calc(100vh-200px)] overflow-y-auto pr-2">
-            {chats.map(chat => (
+            {chats.map((chat, idx) => (
               <div
                 key={chat.id}
                 onClick={() => handleChatSelect(chat)}
-                className={`group bg-base-200 rounded-xl shadow-md hover:shadow-lg transition-all duration-300 transform hover:-translate-y-0.5 cursor-pointer flex flex-col ${selectedChat?.id === chat.id ? "ring-2 ring-white border-2 border-white" : ""}`}
+                className={`group bg-base-200 rounded-xl shadow-md hover:shadow-lg transition-all duration-300 transform hover:-translate-y-0.5 cursor-pointer flex flex-col ${selectedChat?.id === chat.id ? "ring-2 ring-white border-2 border-white" : ""} ${idx === 0 ? "mt-1" : ""}`}
               >
                 <div className="p-4 flex flex-col flex-grow">
                   {/* Bovenste deel kaart: Naam en Type */}
@@ -99,19 +157,6 @@ const MyChatsPage = () => {
                     >
                       {chat.name}
                     </h2>
-                    {chat.type && (
-                      <span
-                        className={`inline-block self-start px-2 py-0.5 text-xs rounded-full font-semibold ${
-                          chat.isPlaceholder
-                            ? "bg-neutral/20 text-neutral-content"
-                            : chat.type === "group"
-                              ? "bg-secondary/20 text-secondary"
-                              : "bg-accent/20 text-accent"
-                        }`}
-                      >
-                        {chat.type.toUpperCase()}
-                      </span>
-                    )}
                   </div>
 
                   {/* Beschrijving (indien aanwezig) */}
@@ -120,7 +165,7 @@ const MyChatsPage = () => {
                   )}
 
                   {/* Stats (Members & P&L) */}
-                  {!chat.isPlaceholder && (chat.members !== undefined || chat.avgPnl !== undefined) && (
+                  {(chat.members !== undefined || chat.avgPnl !== undefined) && (
                     <div className="grid grid-cols-2 gap-2 mb-2 text-xs">
                       <div className="bg-base-100 rounded p-1.5 text-center">
                         <div className="opacity-70 mb-0.5">Members</div>
@@ -145,14 +190,10 @@ const MyChatsPage = () => {
                       Last active: {formatDistanceToNow(new Date(chat.lastActive), { addSuffix: true })}
                     </div>
                   )}
-                  {/* Placeholder specific text - if needed and not covered by description */}
-                  {/* {chat.isPlaceholder && (
-                    <span className="mt-1 text-2xs text-primary opacity-60">(Placeholder Chat)</span>
-                  )} */}
                 </div>
               </div>
             ))}
-            {chats.length === 0 && !chats.some(c => c.isPlaceholder) && (
+            {chats.length === 0 && (
               <p className="text-center opacity-60 py-10">No chats yet. Start a new conversation!</p>
             )}
           </div>
@@ -167,29 +208,47 @@ const MyChatsPage = () => {
                     <span className="text-xs opacity-60">Type: {selectedChat.type.toUpperCase()}</span>
                   )}
                 </div>
-                <div className="flex-grow overflow-y-auto mb-4">
-                  <p className="italic opacity-70">This is where messages for {selectedChat.name} would appear.</p>
-                  {selectedChat.isPlaceholder && (
-                    <p className="mt-4 text-sm">
-                      Since this is a placeholder, there are no real messages. But imagine a lively conversation
-                      here!
-                    </p>
+                <div className="flex-grow overflow-y-auto mb-4 space-y-3 pr-2">
+                  {messages.map(msg => (
+                    <div
+                      key={msg.id}
+                      className={`p-3 rounded-lg shadow-sm max-w-[80%] break-words ${
+                        msg.sender === "user"
+                          ? "bg-primary text-primary-content ml-auto"
+                          : "bg-base-100 mr-auto"
+                      }`}
+                    >
+                      <p className="text-sm">{msg.text}</p>
+                      <p className="text-2xs opacity-60 mt-1 text-right">
+                        {formatDistanceToNow(msg.timestamp, { addSuffix: true })}
+                      </p>
+                    </div>
+                  ))}
+                  {messages.length === 0 && (
+                     <p className="italic opacity-70 text-center mt-10">No messages yet. Send one to start the conversation!</p>
                   )}
-                  <div className="mt-5 space-y-3">
-                    <div className="p-3 bg-base-100 rounded-lg shadow-sm max-w-md self-start">
-                      Hello there! (Dummy message)
-                    </div>
-                    <div className="p-3 bg-primary text-primary-content rounded-lg shadow-sm max-w-md ml-auto self-end">
-                      Hi! How are you? (Dummy message from you)
-                    </div>
-                  </div>
                 </div>
-                <div className="mt-auto pt-4 border-t border-base-300">
+                <div className="mt-auto pt-4 border-t border-base-300 flex items-center gap-2">
                   <input
                     type="text"
                     placeholder={`Message ${selectedChat.name}...`}
-                    className="w-full p-3 rounded-lg bg-base-100 border border-base-300 focus:border-primary outline-none"
+                    className="flex-grow p-3 rounded-lg bg-base-100 border border-base-300 focus:border-primary outline-none text-sm"
+                    value={newMessage}
+                    onChange={e => setNewMessage(e.target.value)}
+                    onKeyPress={e => {
+                      if (e.key === "Enter" && !e.shiftKey) {
+                        e.preventDefault();
+                        handleSendMessage();
+                      }
+                    }}
                   />
+                  <button
+                    onClick={handleSendMessage}
+                    className="btn btn-primary btn-md"
+                    disabled={!newMessage.trim() || !selectedChat}
+                  >
+                    Send
+                  </button>
                 </div>
               </div>
             ) : (
