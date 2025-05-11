@@ -1,7 +1,6 @@
 import { Inter } from "next/font/google";
 import "@rainbow-me/rainbowkit/styles.css";
 import type { Metadata } from "next";
-import Navbar from "~~/components/Navbar";
 import { ScaffoldEthAppWithProviders } from "~~/components/ScaffoldEthAppWithProviders";
 import { ThemeProvider } from "~~/components/ThemeProvider";
 import "~~/styles/globals.css";
@@ -20,7 +19,6 @@ const ScaffoldEthApp = ({ children }: { children: React.ReactNode }) => {
       <body className={inter.className}>
         <ThemeProvider enableSystem>
           <ScaffoldEthAppWithProviders>
-            <Navbar />
             {children}
           </ScaffoldEthAppWithProviders>
         </ThemeProvider>

@@ -106,7 +106,7 @@ const CreateGroupPage = () => {
 
           <div>
             <label htmlFor="price" className="block text-sm font-medium text-base-content mb-1">
-              Price in ROFL
+              Price in ROSE
             </label>
             <input
               type="number"
@@ -115,7 +115,7 @@ const CreateGroupPage = () => {
               onChange={e => setPrice(e.target.value)}
               required
               className="w-full px-4 py-3 rounded-lg bg-base-200 border border-base-300 focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none transition-all"
-              placeholder="Enter the price in ROFL"
+              placeholder="Enter the price in ROSE"
             />
           </div>
 
